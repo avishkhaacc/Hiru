@@ -8,6 +8,9 @@
   <!-- Professional Icons (FontAwesome) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Google Fonts for the Invitation -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  
   <!-- html2canvas Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
@@ -41,108 +44,50 @@
       padding: 35px 30px; 
       box-shadow: 0 8px 30px rgba(0,0,0,0.05);
       box-sizing: border-box;
+      z-index: 10;
     }
 
-    .header-title { 
-      text-align: center; 
-      margin-bottom: 30px; 
-    }
-    .header-title h2 { 
-      margin: 0; 
-      color: var(--text-main); 
-      font-weight: 600; 
-      font-size: 22px; 
-    }
-    .header-title p { 
-      color: var(--text-muted); 
-      font-size: 13px; 
-      margin-top: 8px; 
-    }
+    .header-title { text-align: center; margin-bottom: 30px; }
+    .header-title h2 { margin: 0; color: var(--text-main); font-weight: 600; font-size: 22px; }
+    .header-title p { color: var(--text-muted); font-size: 13px; margin-top: 8px; }
 
-    /* Split Input Wrapper for Title and Name */
-    .input-group-split {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
+    .input-group-split { display: flex; gap: 10px; margin-bottom: 20px; }
     .title-select {
-      width: 35%;
-      padding: 14px 10px;
-      border: 1px solid #dee2e6;
-      border-radius: 8px;
-      font-size: 15px;
-      outline: none;
-      background: #f8f9fa;
-      color: var(--text-main);
-      cursor: pointer;
-      transition: border-color 0.3s;
+      width: 35%; padding: 14px 10px; border: 1px solid #dee2e6; border-radius: 8px;
+      font-size: 15px; outline: none; background: #f8f9fa; color: var(--text-main);
+      cursor: pointer; transition: border-color 0.3s;
     }
-    .title-select:focus {
-      border-color: var(--primary-color);
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
-    }
+    .title-select:focus { border-color: var(--primary-color); background: #ffffff; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); }
 
-    .name-input-container {
-      position: relative;
-      width: 65%;
-    }
-    .name-input-container i {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #adb5bd;
-    }
+    .name-input-container { position: relative; width: 65%; }
+    .name-input-container i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #adb5bd; }
     .name-input-container input {
-      width: 100%; 
-      padding: 14px 16px 14px 40px; 
-      border: 1px solid #dee2e6; 
-      border-radius: 8px;
-      font-size: 15px; 
-      outline: none; 
-      transition: all 0.3s; 
-      box-sizing: border-box;
+      width: 100%; padding: 14px 16px 14px 40px; border: 1px solid #dee2e6; border-radius: 8px;
+      font-size: 15px; outline: none; transition: all 0.3s; box-sizing: border-box;
     }
-    .name-input-container input:focus { 
-      border-color: var(--primary-color); 
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); 
-    }
+    .name-input-container input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); }
 
     .btn {
-      width: 100%; 
-      padding: 14px; 
-      border: none; 
-      border-radius: 8px; 
-      font-size: 15px;
-      font-weight: 600; 
-      cursor: pointer; 
-      transition: all 0.2s ease-in-out;
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      gap: 10px;
-      box-sizing: border-box;
-      margin-bottom: 12px;
+      width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 15px;
+      font-weight: 600; cursor: pointer; transition: all 0.2s ease-in-out;
+      display: flex; justify-content: center; align-items: center; gap: 10px; box-sizing: border-box; margin-bottom: 12px;
     }
     
     .btn-main { background: var(--text-main); color: white; }
     .btn-main:hover { background: #1a1a1a; }
-    
     .btn-preview { background: #f8f9fa; color: var(--text-main); border: 1px solid #dee2e6; }
     .btn-preview:hover { background: #e9ecef; }
-    
     .btn-whatsapp { background: #25D366; color: white; }
     .btn-whatsapp:hover { background: #20bd5a; }
 
     .hidden { display: none !important; }
-    
     .fade-in { animation: fadeInEffect 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes fadeInEffect { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
 
     .preview-section { margin-top: 20px; text-align: center; padding-top: 20px; border-top: 1px solid #eee; }
-    canvas { max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid #eee; }
+    
+    /* Display the generated image cleanly */
+    #resultImage { max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid #eee; }
 
     /* Custom Toasts */
     .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
@@ -152,6 +97,42 @@
     .toast.success i { color: var(--success); }
     .toast.warning { border-left-color: var(--warning); }
     .toast.warning i { color: var(--warning); }
+
+    /* ========================================================
+       HIDDEN HTML INVITATION TEMPLATE (For Image Capture)
+       ======================================================== */
+    #captureArea {
+      position: absolute;
+      top: -9999px; left: -9999px;
+      width: 600px; height: 840px; 
+      background-image: url('invite.jpg'); 
+      background-size: cover; background-position: center; background-color: white;
+      color: #222; text-align: center;
+      padding: 95px 60px 60px 60px; box-sizing: border-box;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .t-heading { font-size: 14px; letter-spacing: 2px; margin-bottom: 12px; font-weight: bold; }
+    .t-name { font-family: 'Great Vibes', cursive; font-size: 58px; margin: 0; font-weight: normal; color: #111; line-height: 1; }
+    .t-parents { font-size: 12px; margin: 4px 0 22px 0; line-height: 1.4; color: #333; }
+    .t-text { font-size: 13px; line-height: 1.5; margin: 18px 0; color: #333; }
+    
+    .t-dynamic-row { display: flex; align-items: flex-end; justify-content: center; gap: 4px; font-size: 14px; margin: 25px 0; }
+    .t-titles { display: flex; gap: 2px; letter-spacing: 1px; }
+    
+    .t-guest-name { 
+      width: 280px; /* Reduced width for perfectly balanced dotted line */
+      border-bottom: 2px dotted #222; text-align: center; 
+      padding-bottom: 2px; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; 
+    }
+    
+    .t-date-row { display: flex; justify-content: center; align-items: center; gap: 16px; font-size: 14px; margin: 8px 0; font-weight: bold; }
+    .t-date-num { font-size: 38px; border-left: 2px solid #222; border-right: 2px solid #222; padding: 0 16px; line-height: 1; }
+    .t-venue { font-size: 12px; line-height: 1.5; margin-top: 12px; }
+    .t-footer { font-size: 10px; font-weight: bold; margin-top: 25px; letter-spacing: 1px; }
+    
+    /* CSS Strike-through for titles */
+    .strike { text-decoration: line-through; color: #666; }
   </style>
 </head>
 <body>
@@ -164,7 +145,6 @@
     <p>Select title and enter guest name</p>
   </div>
 
-  <!-- New Split Input Area -->
   <div class="input-group-split">
     <select id="guestTitle" class="title-select">
       <option value="MR">MR</option>
@@ -192,7 +172,51 @@
   </div>
 
   <div class="preview-section hidden" id="previewArea">
-    <canvas id="inviteCanvas"></canvas>
+    <!-- Image generated by HTML2Canvas will appear here -->
+    <img id="resultImage" alt="Generated Invitation">
+  </div>
+</div>
+
+<!-- ========================================================
+     THE ACTUAL INVITATION TEMPLATE (Hidden from view)
+     ======================================================== -->
+<div id="captureArea">
+  <div class="t-heading">WEDDING INVITATION</div>
+  
+  <div class="t-name">Hiruni</div>
+  <div class="t-parents">DAUGHTER OF MR. SURAJ MUHANDIRAMGE<br>& MRS. CHAMARIE HETTIARACHCHI</div>
+  
+  <div class="t-name">Udayanga</div>
+  <div class="t-parents">SON OF MR. J.P. MAITHREEPALA<br>& MRS. W.I.M. AMARATHUNGA</div>
+  
+  <div class="t-text">TOGETHER WITH OUR PARENTS<br>REQUEST THE PLEASURE THE PRESENCE OF</div>
+  
+  <div class="t-dynamic-row">
+    <div class="t-titles">
+      <span id="lbl-rev">REV</span>/
+      <span id="lbl-mr">MR</span>/
+      <span id="lbl-mrs">MRS</span>/
+      <span id="lbl-miss">MISS</span>
+    </div>
+    <div class="t-guest-name" id="lbl-guest-name"></div>
+  </div>
+  
+  <div class="t-text">TO GRACE THIS OCCASION WHEN THEY<br>PLEDGE THEIR LOVE TO EACH OTHER</div>
+  
+  <div style="margin-top: 15px;">
+    <div style="font-size: 13px; letter-spacing: 1px;">THURSDAY</div>
+    <div class="t-date-row">
+      <span>APRIL</span>
+      <span class="t-date-num">23</span>
+      <span>2026</span>
+    </div>
+    <div class="t-venue">
+      FROM 8.30 TO 4.00 P.M.<br>
+      (PORUWA CEREMONY AT 10.21 A.M.)<br>
+      AT <strong>DHANAMUTHU ROYAL BANQUET HALL</strong><br>
+      DAGONNA, NEGOMBO
+    </div>
+    <div class="t-footer">HIRUNI : 076-2567965 / UDAYANGA : 076-4816775</div>
   </div>
 </div>
 
@@ -201,15 +225,13 @@
   // 🔴 🔴 🔴 PASTE YOUR LINKS HERE 🔴 🔴 🔴
   // =========================================================================
   var GITHUB_SITE_URL = "https://avishkhaacc.github.io/Hiru/index.html"; 
-  var GAS_URL = "Yhttps://script.google.com/macros/s/AKfycbzC-Ghr2E1iSTy4VM22Ftiu-_Z_1NkFY6cOqnvBFfFTXF3vSUshCetwF83s0CU25DDOqQ/exec"; 
+  var GAS_URL = "https://script.google.com/macros/s/AKfycbzC-Ghr2E1iSTy4VM22Ftiu-_Z_1NkFY6cOqnvBFfFTXF3vSUshCetwF83s0CU25DDOqQ/exec"; 
   // =========================================================================
 
-  var canvas = document.getElementById('inviteCanvas');
-  var ctx = canvas.getContext('2d');
   var finalLink = "";
   var generatedDataUrl = "";
-  var imageLoaded = false;
   var safeFileName = "";
+  var currentGuestName = "";
   
   function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
@@ -221,11 +243,6 @@
     setTimeout(() => toast.classList.add('show'), 10);
     setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3000);
   }
-
-  var inviteImg = new Image();
-  inviteImg.crossOrigin = "Anonymous";
-  inviteImg.src = 'invite.jpg'; 
-  inviteImg.onload = function() { imageLoaded = true; };
 
   document.getElementById('guestName').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
@@ -242,77 +259,69 @@
       document.getElementById('guestName').focus();
       return; 
     }
-    if (!imageLoaded) { 
-      showToast("Template loading. Please wait.", "warning"); 
-      return; 
-    }
 
-    // Combine Title and Name for the backend and link (e.g. "MR. John Doe")
     var fullName = titleVal + ". " + nameVal;
     safeFileName = fullName.replace(/[^a-zA-Z0-9]/g, '_');
+    currentGuestName = fullName;
 
     // UI Loading state
     var btn = document.getElementById('btnGenerate');
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
     btn.style.pointerEvents = 'none';
 
+    // 1. Reset all strikes
+    document.getElementById('lbl-rev').className = "";
+    document.getElementById('lbl-mr').className = "";
+    document.getElementById('lbl-mrs').className = "";
+    document.getElementById('lbl-miss').className = "";
+
+    // 2. Apply perfect CSS strike-through
+    if(titleVal === "MR") { 
+      document.getElementById('lbl-rev').className = "strike";
+      document.getElementById('lbl-mrs').className = "strike";
+      document.getElementById('lbl-miss').className = "strike";
+    } else if (titleVal === "MRS") { 
+      document.getElementById('lbl-rev').className = "strike";
+      document.getElementById('lbl-mr').className = "strike";
+      document.getElementById('lbl-miss').className = "strike";
+    } else if (titleVal === "MISS") { 
+      document.getElementById('lbl-rev').className = "strike";
+      document.getElementById('lbl-mr').className = "strike";
+      document.getElementById('lbl-mrs').className = "strike";
+    } else if (titleVal === "REV") { 
+      document.getElementById('lbl-mr').className = "strike";
+      document.getElementById('lbl-mrs').className = "strike";
+      document.getElementById('lbl-miss').className = "strike";
+    }
+
+    // 3. Set Name
+    document.getElementById('lbl-guest-name').innerText = nameVal;
+
+    // 4. Capture the HTML template as Image
     setTimeout(() => {
-      // Prepare Canvas
-      canvas.width = inviteImg.width;
-      canvas.height = inviteImg.height;
-      ctx.drawImage(inviteImg, 0, 0, canvas.width, canvas.height);
+      html2canvas(document.getElementById('captureArea'), { 
+        scale: 2, 
+        useCORS: true 
+      }).then(function(canvas) {
+        generatedDataUrl = canvas.toDataURL("image/jpeg", 0.95);
+        document.getElementById('resultImage').src = generatedDataUrl;
 
-      var cw = canvas.width;
-      var ch = canvas.height;
-      var strikeY = ch * 0.515; 
-      
-      ctx.lineWidth = 2; 
-      ctx.strokeStyle = "rgba(30, 30, 30, 0.8)"; 
+        var encodedName = btoa(unescape(encodeURIComponent(fullName)));
+        finalLink = GITHUB_SITE_URL + "?invite=" + encodedName;
 
-      function drawStrike(leftPct, widthPct) {
-        ctx.beginPath();
-        ctx.moveTo(cw * (leftPct / 100), strikeY);
-        ctx.lineTo(cw * ((leftPct + widthPct) / 100), strikeY);
-        ctx.stroke();
-      }
+        fetch(GAS_URL + "?name=" + encodeURIComponent(fullName) + "&phone=N/A").catch(e => console.log("Silent save"));
 
-      // Strike logic based on selected Title
-      if(titleVal === "MR") { drawStrike(7.5, 6.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); } 
-      else if (titleVal === "MRS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(24.5, 6.5); } 
-      else if (titleVal === "MISS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(18.5, 6); } 
-      else if (titleVal === "REV") { drawStrike(14, 4.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); }
-
-      // Write Name Only (Title is already printed on the card)
-      var fontSize = Math.floor(cw * 0.025); 
-      ctx.font = fontSize + "px 'Times New Roman', serif";
-      ctx.fillStyle = "#222";
-      ctx.textBaseline = "middle";
-      ctx.fillText(nameVal.toUpperCase(), cw * 0.45, ch * 0.508); 
-
-      // Generate Base64 Image
-      generatedDataUrl = canvas.toDataURL("image/jpeg", 0.9);
-
-      // Generate Encoded Link using the COMBINED name
-      var encodedName = btoa(unescape(encodeURIComponent(fullName)));
-      finalLink = GITHUB_SITE_URL + "?invite=" + encodedName;
-
-      // Save to Google Sheets silently
-      var fetchUrl = GAS_URL + "?name=" + encodeURIComponent(fullName) + "&phone=N/A";
-      fetch(fetchUrl).catch(e => console.log("Data save initiated."));
-
-      // Show Action Buttons
-      btn.classList.add('hidden');
-      var actionBtns = document.getElementById('actionButtons');
-      actionBtns.classList.remove('hidden');
-      actionBtns.classList.add('fade-in');
-      
-      showToast("Link generated successfully!");
-      
-      // Reset generate button in case they want to generate another
-      btn.innerHTML = '<i class="fa-solid fa-gear"></i> Generate Link';
-      btn.style.pointerEvents = 'auto';
-
-    }, 300); // Small artificial delay
+        btn.classList.add('hidden');
+        var actionBtns = document.getElementById('actionButtons');
+        actionBtns.classList.remove('hidden');
+        actionBtns.classList.add('fade-in');
+        
+        showToast("Link generated successfully!");
+        
+        btn.innerHTML = '<i class="fa-solid fa-gear"></i> Generate Link';
+        btn.style.pointerEvents = 'auto';
+      });
+    }, 500); // Wait 500ms to allow fonts to load properly before capturing
   }
 
   function togglePreview() {
