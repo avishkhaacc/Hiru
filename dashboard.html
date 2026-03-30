@@ -161,10 +161,10 @@
 
     // 4. Base64 Link එක හදනවා (Secret Code)
     var encodedName = btoa(unescape(encodeURIComponent(fullName)));
-    finalLink = GITHUB_SITE_URL + "?invite=" + encodedName;
+    finalLink = https://avishkhaacc.github.io/Hiru/ + "?invite=" + encodedName;
 
     // 5. Google Sheet එකට Background එකෙන් දත්ත යවනවා
-    var fetchUrl = GAS_URL + "?name=" + encodeURIComponent(fullName) + "&phone=N/A";
+    var fetchUrl = https://script.google.com/macros/s/AKfycbzC-Ghr2E1iSTy4VM22Ftiu-_Z_1NkFY6cOqnvBFfFTXF3vSUshCetwF83s0CU25DDOqQ/exec + "?name=" + encodeURIComponent(fullName) + "&phone=N/A";
     fetch(fetchUrl).catch(e => console.log("GAS Save Error"));
 
     // Preview එක පෙන්නනවා
