@@ -5,18 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hiruni & Udayanga's Wedding Invitation</title>
   
-  <!-- Professional Icons (FontAwesome) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Google Fonts for the Invitation -->
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
-  
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     body, html { margin: 0; padding: 0; height: 100%; background: #000; overflow: hidden; font-family: 'Times New Roman', serif; color: #fff; }
     
-    /* --- Loading Screen --- */
     #loader {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0d0d0d; z-index: 9999;
       display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1.5s ease;
@@ -30,111 +25,72 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     #loader p { color: #d4af37; font-size: 18px; letter-spacing: 2px; margin: 0; }
 
-    /* --- 3D Scene Container --- */
-    .desk-container {
-      position: relative; width: 100%; height: 100%; perspective: 1500px;
-      display: flex; justify-content: center; align-items: center;
-    }
+    .desk-container { position: relative; width: 100%; height: 100%; perspective: 1500px; display: flex; justify-content: center; align-items: center; }
+    .desk-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('table.jpg'); background-size: cover; background-position: center; transition: filter 2s ease, transform 2s ease; z-index: 1; }
+    .dark-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0); transition: background 2s ease; z-index: 2; pointer-events: none; }
 
-    .desk-bg {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background-image: url('table.jpg'); background-size: cover; background-position: center;
-      transition: filter 2s ease, transform 2s ease; z-index: 1;
-    }
+    .envelope-wrapper { position: relative; width: 320px; height: 450px; z-index: 4; cursor: pointer; transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; transform: rotateX(15deg) rotateY(-10deg) rotateZ(0deg); }
+    .envelope-cover { position: absolute; width: 100%; height: 100%; background-image: url('card.png'); background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 2; backface-visibility: hidden; }
 
-    .dark-overlay { 
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-      background: rgba(0,0,0,0); transition: background 2s ease; z-index: 2; pointer-events: none; 
-    }
-
-    /* --- Envelope --- */
-    .envelope-wrapper {
-      position: relative; width: 320px; height: 450px; z-index: 4; cursor: pointer;
-      transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d;
-      transform: rotateX(15deg) rotateY(-10deg) rotateZ(0deg);
-    }
-
-    .envelope-cover {
-      position: absolute; width: 100%; height: 100%; background-image: url('card.png'); 
-      background-size: contain; background-repeat: no-repeat; background-position: center;
-      z-index: 2; backface-visibility: hidden;
-    }
-
-    /* --- Inner Card Container --- */
     .inner-card {
       position: absolute; top: 5%; left: 5%; width: 300px; height: 420px; 
       transform: translateZ(-1px); opacity: 0; z-index: 1;
       transition: transform 2s cubic-bezier(0.2, 1, 0.3, 1), opacity 1.5s ease;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      border-radius: 5px;
-      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-radius: 5px; overflow: hidden;
     }
 
-    /* --- HTML/CSS Based Invitation Content --- 
-       (High-Res scaled down for crisp text rendering) */
+    /* Fixed Font Sizes matching Dashboard */
     .invite-content-wrapper {
       position: absolute; top: 0; left: 0;
-      width: 600px; height: 840px; /* Double size for high resolution */
-      transform: scale(0.5); /* Scale down to fit 300x420 */
-      transform-origin: top left;
-      background-image: url('invite.jpg'); /* Blank border image */
-      background-size: cover; background-position: center; background-color: white;
+      width: 600px; height: 840px; 
+      transform: scale(0.5); transform-origin: top left;
+      background-image: url('invite.jpg'); background-size: cover; background-position: center; background-color: white;
       color: #222; text-align: center;
-      padding: 95px 60px 60px 60px; box-sizing: border-box;
+      padding: 120px 60px 60px 60px; box-sizing: border-box;
     }
     
-    .t-heading { font-size: 14px; letter-spacing: 2px; margin-bottom: 12px; font-weight: bold; }
-    .t-name { font-family: 'Great Vibes', cursive; font-size: 58px; margin: 0; font-weight: normal; color: #111; line-height: 1; }
-    .t-parents { font-size: 12px; margin: 4px 0 22px 0; line-height: 1.4; color: #333; }
-    .t-text { font-size: 13px; line-height: 1.5; margin: 18px 0; color: #333; }
+    .t-heading { font-size: 18px; letter-spacing: 3px; margin-bottom: 15px; font-weight: bold; }
+    .t-name { font-family: 'Great Vibes', cursive; font-size: 75px; margin: 0; font-weight: normal; color: #111; line-height: 1; }
+    .t-parents { font-size: 15px; margin: 5px 0 25px 0; line-height: 1.4; color: #333; }
+    .t-text { font-size: 16px; line-height: 1.5; margin: 22px 0; color: #333; }
     
-    .t-dynamic-row { display: flex; align-items: flex-end; justify-content: center; gap: 4px; font-size: 14px; margin: 25px 0; }
-    .t-titles { display: flex; gap: 2px; letter-spacing: 1px; }
+    .t-dynamic-row { display: flex; align-items: flex-end; justify-content: center; gap: 8px; font-size: 18px; margin: 30px 0; }
+    .t-titles { display: flex; gap: 4px; letter-spacing: 1px; }
     
     .t-guest-name { 
-      flex-grow: 1; border-bottom: 2px dotted #222; text-align: center; 
-      padding-bottom: 2px; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; 
+      width: 320px; 
+      border-bottom: 3px dotted #222; text-align: center; 
+      padding-bottom: 4px; font-weight: bold; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; 
     }
     
-    .t-date-row { display: flex; justify-content: center; align-items: center; gap: 16px; font-size: 14px; margin: 8px 0; font-weight: bold; }
-    .t-date-num { font-size: 38px; border-left: 2px solid #222; border-right: 2px solid #222; padding: 0 16px; line-height: 1; }
-    .t-venue { font-size: 12px; line-height: 1.5; margin-top: 12px; }
-    .t-footer { font-size: 10px; font-weight: bold; margin-top: 25px; letter-spacing: 1px; }
+    .t-date-row { display: flex; justify-content: center; align-items: center; gap: 20px; font-size: 18px; margin: 12px 0; font-weight: bold; }
+    .t-date-num { font-size: 50px; border-left: 3px solid #222; border-right: 3px solid #222; padding: 0 20px; line-height: 1; }
+    .t-venue { font-size: 15px; line-height: 1.5; margin-top: 15px; }
+    .t-footer { font-size: 13px; font-weight: bold; margin-top: 30px; letter-spacing: 1.5px; }
     
-    /* CSS Strike-through for titles */
     .strike { text-decoration: line-through; color: #666; }
 
-    /* --- Action Buttons --- */
     .action-buttons {
-      position: absolute; bottom: 55px;
-      display: flex; gap: 15px; justify-content: center; width: 100%;
-      opacity: 0; z-index: 20; transform: translateY(20px);
-      transition: opacity 1s ease 2.5s, transform 1s ease 2.5s;
+      position: absolute; bottom: 55px; display: flex; gap: 15px; justify-content: center; width: 100%;
+      opacity: 0; z-index: 20; transform: translateY(20px); transition: opacity 1s ease 2.5s, transform 1s ease 2.5s;
     }
     .btn {
-      padding: 10px 20px; background: rgba(212, 175, 55, 0.95); color: #fff;
-      text-decoration: none; border-radius: 25px; font-size: 12px; font-weight: bold;
-      font-family: 'Segoe UI', sans-serif; text-transform: uppercase; letter-spacing: 1px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: background 0.3s;
-      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px; background: rgba(212, 175, 55, 0.95); color: #fff; text-decoration: none; border-radius: 25px; 
+      font-size: 12px; font-weight: bold; font-family: 'Segoe UI', sans-serif; text-transform: uppercase; letter-spacing: 1px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: background 0.3s; display: flex; align-items: center; gap: 8px;
     }
     .btn:hover { background: #fff; color: #d4af37; }
-    .btn i { font-size: 14px; } /* FontAwesome icon sizing */
+    .btn i { font-size: 14px; }
 
-    /* --- Animation States --- */
     .open-state .desk-bg { filter: blur(8px) brightness(0.3); transform: scale(1.1); }
     .open-state .dark-overlay { background: rgba(0,0,0,0.5); }
     .open-state .envelope-wrapper { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateZ(100px); pointer-events: none; }
     .open-state .inner-card { transform: translateZ(50px) translateY(-20px) scale(0.9); opacity: 1; z-index: 10; }
     .open-state .action-buttons { opacity: 1; transform: translateY(0); }
 
-    /* --- Advanced Footer Watermark --- */
     .watermark-footer {
-      position: fixed; bottom: 8px; width: 100%; text-align: center;
-      z-index: 999; opacity: 0.8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-      font-size: 9px; color: #ffffff; 
-      pointer-events: auto; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); 
-      line-height: 1.4; letter-spacing: 0.8px; padding: 0 10px; box-sizing: border-box;
+      position: fixed; bottom: 8px; width: 100%; text-align: center; z-index: 999; opacity: 0.8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      font-size: 9px; color: #ffffff; pointer-events: auto; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); line-height: 1.4; letter-spacing: 0.8px; padding: 0 10px; box-sizing: border-box;
     }
     .watermark-footer a { color: #ffffff; text-decoration: none; transition: all 0.3s ease; }
     .watermark-footer a:hover { color: #d4af37; text-shadow: 0 0 5px rgba(212,175,55,0.5); }
@@ -161,7 +117,6 @@
   <div class="envelope-wrapper" onclick="openEnvelope()">
     <div class="envelope-cover"></div>
     
-    <!-- === HTML Generated Inner Card === -->
     <div class="inner-card" id="inviteCard">
       <div class="invite-content-wrapper">
         <div class="t-heading">WEDDING INVITATION</div>
@@ -187,7 +142,7 @@
         <div class="t-text">TO GRACE THIS OCCASION WHEN THEY<br>PLEDGE THEIR LOVE TO EACH OTHER</div>
         
         <div style="margin-top: 15px;">
-          <div style="font-size: 13px; letter-spacing: 1px;">THURSDAY</div>
+          <div style="font-size: 16px; letter-spacing: 1.5px;">THURSDAY</div>
           <div class="t-date-row">
             <span>APRIL</span>
             <span class="t-date-num">23</span>
@@ -203,8 +158,6 @@
         </div>
       </div>
     </div>
-    <!-- ================================== -->
-
   </div>
 
   <div class="action-buttons">
@@ -225,7 +178,6 @@
 </div>
 
 <script>
-  // Secret Code (Base64) Decode Logic
   var urlParams = new URLSearchParams(window.location.search);
   var inviteCode = urlParams.get('invite');
   var fullName = "Guest"; 
@@ -247,17 +199,17 @@
 
     var title = "";
     var nameOnly = fullName;
-    var match = fullName.match(/^(Mr|Mrs|Miss|Rev)\.?\s*(.*)/i); 
+    
+    // මේක තමයි MRS වැරදිලා MR වෙන එක Fix කරපු තැන!
+    var match = fullName.match(/^(Mrs|Miss|Mr|Rev)\.?\s*(.*)/i); 
     
     if(match) {
       title = match[1].toUpperCase(); 
       nameOnly = match[2]; 
     }
 
-    // Assign name to HTML element
     document.getElementById('lbl-guest-name').innerText = nameOnly;
 
-    // Apply perfect CSS strike-through based on Title
     if(title === "MR") { 
       document.getElementById('lbl-rev').className = "strike";
       document.getElementById('lbl-mrs').className = "strike";
@@ -289,7 +241,6 @@
     }, 1500);
   }
 
-  // --- Native Calendar App Logic ---
   function addToCalendar() {
     var eventTitle = "Hiruni & Udayanga's Wedding";
     var location = "Dhanamuthu Royal Banquet Hall, Dagonna, Negombo";
