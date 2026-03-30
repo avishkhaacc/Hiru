@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #eef2f3; }
+    .box { background: white; padding: 25px; border-radius: 10px; max-width: 400px; margin: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px;}
+    button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px;}
+    button.wa-btn { background: #25d366; margin-top: 15px; display: none; }
+    #previewLink { margin-top: 20px; word-break: break-all; color: #0056b3; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Generate Invite</h2>
+  <label>අමුත්තාගේ නම (Title එකත් එක්ක ගහන්න):</label>
+  <input type="text" id="fullName" placeholder="උදා: Mr. Sandusha">
+  
+  <label>WhatsApp අංකය:</label>
+  <input type="text" id="phone" placeholder="947...">
+  
+  <button onclick="generateLink()">Generate Link</button>
+  
+  <div id="previewLink"></div>
+  <button id="waBtn" class="wa-btn" onclick="sendWhatsApp()">Send WhatsApp</button>
+</div>
+
+<script>
+  // වැදගත්: ඔයාගේ Google Apps Script Web App URL එක මෙතනට දාන්න
+  var GAS_URL = "https://script.google.com/macros/s/AKfycbzAG9KS6tuBhub0w4qzYBVZsL-hPNmrfDy8-ysqxst8GQvlw9AQpX6B7yn-7Sejf2KcPg/exec"; 
+  
+  // වැදගත්: ඔයාගේ GitHub Pages ලින්ක් එක මෙතනට දාන්න (Deploy කරාට පස්සේ)
+  var GITHUB_SITE_URL = "https://yourusername.github.io/your-repo-name/index.html"; 
+
+  var finalLink = "";
+  var finalName = "";
+  var finalPhone = "";
+
+  function generateLink() {
+    var nameInput = document.getElementById('fullName').value.trim();
+    var phoneInput = document.getElementById('phone').value.trim();
+    
+    if(!nameInput) { alert("කරුණාකර නම ඇතුළත් කරන්න"); return; }
+    document.getElementById('previewLink').innerText = "Generating & Saving...";
+    
+    // 1. අමුත්තාට යවන ලින්ක් එක හදනවා (GitHub ලින්ක් එක + නම)
+    finalLink = GITHUB_SITE_URL + "?name=" + encodeURIComponent(nameInput);
+    finalName = nameInput;
+    finalPhone = phoneInput;
+
+    // 2. Google Sheet එකට දත්ත යවනවා (Background එකෙන්)
+    var fetchUrl = GAS_URL + "?name=" + encodeURIComponent(nameInput) + "&phone=" + encodeURIComponent(phoneInput);
+    
+    fetch(fetchUrl)
+      .then(response => {
+        // දත්ත සේව් වුණාට පස්සේ ලින්ක් එක පෙන්නනවා
+        document.getElementById('previewLink').innerHTML = "<b>සූදානම්:</b><br><a href='" + finalLink + "' target='_blank'>Preview Invitation</a>";
+        document.getElementById('waBtn').style.display = "block";
+      })
+      .catch(error => {
+        alert("Google Sheet එකට සේව් කිරීමේ දෝෂයක්. නමුත් ලින්ක් එක හැදුනා.");
+        document.getElementById('previewLink').innerHTML = "<a href='" + finalLink + "' target='_blank'>Preview Invitation</a>";
+      });
+  }
+
+  function sendWhatsApp() {
+    var msg = "ආයුබෝවන් " + finalName + ",\n\nඅපේ විවාහ උත්සවයේ ආරාධනා පත්‍රය මෙතනින් බලන්න: " + finalLink;
+    window.open("https://wa.me/" + finalPhone + "?text=" + encodeURIComponent(msg), '_blank');
+  }
+</script>
+</body>
+</html>
