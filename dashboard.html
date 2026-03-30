@@ -97,26 +97,27 @@
     .toast.warning i { color: var(--warning); }
 
     /* ========================================================
-       HIDDEN HTML INVITATION TEMPLATE (Fixed Font Sizes)
+       HIDDEN HTML INVITATION TEMPLATE (Fixed Overflow Issue)
        ======================================================== */
     #captureArea {
       position: absolute;
       top: -9999px; left: -9999px;
-      width: 600px; height: 840px; 
+      width: 600px; height: 860px; /* උස පොඩ්ඩක් වැඩි කළා */
       background-image: url('invite.jpg'); 
-      background-size: cover; background-position: center; background-color: white;
+      background-size: 100% 100%; /* Border එක කැපෙන්නේ නැති වෙන්න 100% දුන්නා */
+      background-position: center; background-color: white;
       color: #222; text-align: center;
-      padding: 120px 60px 60px 60px; /* Adjusted padding to fit border */
+      padding: 100px 50px 40px 50px; /* Padding එක අඩු කරලා ඉඩ හදාගත්තා */
       box-sizing: border-box;
       font-family: 'Times New Roman', Times, serif;
     }
     
-    .t-heading { font-size: 18px; letter-spacing: 3px; margin-bottom: 15px; font-weight: bold; }
-    .t-name { font-family: 'Great Vibes', cursive; font-size: 75px; margin: 0; font-weight: normal; color: #111; line-height: 1; }
-    .t-parents { font-size: 15px; margin: 5px 0 25px 0; line-height: 1.4; color: #333; }
-    .t-text { font-size: 16px; line-height: 1.5; margin: 22px 0; color: #333; }
+    .t-heading { font-size: 18px; letter-spacing: 3px; margin-bottom: 8px; font-weight: bold; }
+    .t-name { font-family: 'Great Vibes', cursive; font-size: 70px; margin: 0; font-weight: normal; color: #111; line-height: 1; }
+    .t-parents { font-size: 14px; margin: 5px 0 15px 0; line-height: 1.4; color: #333; }
+    .t-text { font-size: 15px; line-height: 1.5; margin: 15px 0; color: #333; }
     
-    .t-dynamic-row { display: flex; align-items: flex-end; justify-content: center; gap: 8px; font-size: 18px; margin: 30px 0; }
+    .t-dynamic-row { display: flex; align-items: flex-end; justify-content: center; gap: 8px; font-size: 18px; margin: 20px 0; }
     .t-titles { display: flex; gap: 4px; letter-spacing: 1px; }
     
     .t-guest-name { 
@@ -125,10 +126,10 @@
       padding-bottom: 4px; font-weight: bold; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; 
     }
     
-    .t-date-row { display: flex; justify-content: center; align-items: center; gap: 20px; font-size: 18px; margin: 12px 0; font-weight: bold; }
-    .t-date-num { font-size: 50px; border-left: 3px solid #222; border-right: 3px solid #222; padding: 0 20px; line-height: 1; }
-    .t-venue { font-size: 15px; line-height: 1.5; margin-top: 15px; }
-    .t-footer { font-size: 13px; font-weight: bold; margin-top: 30px; letter-spacing: 1.5px; }
+    .t-date-row { display: flex; justify-content: center; align-items: center; gap: 20px; font-size: 18px; margin: 10px 0; font-weight: bold; }
+    .t-date-num { font-size: 45px; border-left: 3px solid #222; border-right: 3px solid #222; padding: 0 20px; line-height: 1; }
+    .t-venue { font-size: 14px; line-height: 1.5; margin-top: 10px; }
+    .t-footer { font-size: 12px; font-weight: bold; margin-top: 20px; letter-spacing: 1.5px; }
     
     .strike { text-decoration: line-through; color: #666; }
   </style>
@@ -219,7 +220,7 @@
   // 🔴 🔴 🔴 PASTE YOUR LINKS HERE 🔴 🔴 🔴
   // =========================================================================
   var GITHUB_SITE_URL = "https://avishkhaacc.github.io/Hiru/index.html"; 
-  var GAS_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"; 
+  var GAS_URL = "https://script.google.com/macros/s/AKfycbzC-Ghr2E1iSTy4VM22Ftiu-_Z_1NkFY6cOqnvBFfFTXF3vSUshCetwF83s0CU25DDOqQ/exec"; 
   // =========================================================================
 
   var finalLink = "";
@@ -342,7 +343,7 @@
     var msg = "We joyfully invite you to share in our happiness as we celebrate our wedding day! \n\n" +
               "📍 Venue: Dhanamuthu Royal Banquet Hall, Negombo\n" +
               "⏱️ Poruwa Ceremony: 10:21 AM\n\n" +
-              "Please click the link below to view your digitalinvitation\n" + 
+              "Please click the link below to view your digital invitation\n" + 
               finalLink;
 
     var wpUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(msg);
