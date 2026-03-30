@@ -3,113 +3,225 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Advanced Invite Dashboard</title>
+  <title>Invitation Management System</title>
+  
+  <!-- Professional Icons (FontAwesome) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    :root { --primary: #d4af37; --bg: #f4f7f6; --text: #333; --card-bg: #ffffff; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    :root { 
+      --primary-color: #d4af37; 
+      --bg-color: #f8f9fa; 
+      --card-bg: #ffffff; 
+      --text-main: #333333;
+      --text-muted: #6c757d;
+    }
     
-    /* Advanced Card UI */
-    .dashboard-card {
-      background: var(--card-bg); width: 100%; max-width: 450px; border-radius: 20px;
-      padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      transform: translateY(20px); opacity: 0; animation: slideUp 0.8s ease forwards;
+    body { 
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+      background: var(--bg-color); 
+      margin: 0; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
     }
-    @keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
-
-    .header { text-align: center; margin-bottom: 25px; }
-    .header h2 { margin: 0; color: #111; font-weight: 600; font-size: 24px; }
-    .header p { color: #666; font-size: 14px; margin-top: 5px; }
-
-    /* Input Field */
-    .input-group { position: relative; margin-bottom: 20px; }
-    .input-group input {
-      width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px;
-      font-size: 16px; outline: none; transition: all 0.3s; box-sizing: border-box;
+    
+    .dashboard-wrapper {
+      background: var(--card-bg); 
+      width: 100%; 
+      max-width: 480px; 
+      border-radius: 12px;
+      padding: 35px 30px; 
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+      box-sizing: border-box;
     }
-    .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
 
-    /* Buttons */
+    .header-title { 
+      text-align: center; 
+      margin-bottom: 30px; 
+    }
+    .header-title h2 { 
+      margin: 0; 
+      color: var(--text-main); 
+      font-weight: 600; 
+      font-size: 22px; 
+      letter-spacing: 0.5px;
+    }
+    .header-title p { 
+      color: var(--text-muted); 
+      font-size: 13px; 
+      margin-top: 8px; 
+    }
+
+    .input-wrapper { margin-bottom: 20px; }
+    .input-wrapper input {
+      width: 100%; 
+      padding: 14px 16px; 
+      border: 1px solid #dee2e6; 
+      border-radius: 8px;
+      font-size: 15px; 
+      outline: none; 
+      transition: border-color 0.3s; 
+      box-sizing: border-box;
+    }
+    .input-wrapper input:focus { 
+      border-color: var(--primary-color); 
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); 
+    }
+
     .btn {
-      width: 100%; padding: 15px; border: none; border-radius: 12px; font-size: 16px;
-      font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-      display: flex; justify-content: center; align-items: center; gap: 8px;
+      width: 100%; 
+      padding: 14px; 
+      border: none; 
+      border-radius: 8px; 
+      font-size: 15px;
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: all 0.2s ease-in-out;
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      gap: 10px;
+      box-sizing: border-box;
+      margin-bottom: 12px;
     }
-    .btn-primary { background: linear-gradient(135deg, #d4af37, #b5952f); color: white; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); }
-    .btn-primary:active { transform: scale(0.98); }
+    
+    .btn-main { 
+      background: var(--text-main); 
+      color: white; 
+    }
+    .btn-main:hover { background: #1a1a1a; }
+    
+    .btn-preview { 
+      background: #f8f9fa; 
+      color: var(--text-main); 
+      border: 1px solid #dee2e6; 
+    }
+    .btn-preview:hover { background: #e9ecef; }
     
     .btn-whatsapp {
-      background: linear-gradient(135deg, #25D366, #128C7E); color: white; margin-top: 15px;
-      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); display: none; /* මුලින් නොපෙනේ */
+      background: #25D366; 
+      color: white; 
     }
-    .btn-whatsapp:active { transform: scale(0.98); }
+    .btn-whatsapp:hover { background: #20bd5a; }
 
-    /* Canvas Preview Area */
-    .preview-container {
-      margin-top: 25px; text-align: center; display: none;
-      animation: fadeIn 0.5s ease;
-    }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .preview-container p { font-size: 14px; font-weight: bold; color: #555; margin-bottom: 10px; }
+    /* Hidden elements and Fade animations */
+    .hidden { display: none !important; }
     
-    canvas {
-      max-width: 100%; height: auto; border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.15); border: 1px solid #ddd;
+    .fade-in {
+      animation: fadeInEffect 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    
+    @keyframes fadeInEffect { 
+      0% { opacity: 0; transform: translateY(15px); } 
+      100% { opacity: 1; transform: translateY(0); } 
     }
 
-    .status-msg { text-align: center; font-size: 13px; color: #888; margin-top: 15px; height: 15px; }
+    .preview-section {
+      margin-top: 20px; 
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    canvas {
+      max-width: 100%; 
+      height: auto; 
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+      border: 1px solid #eee;
+    }
+
+    .status-text { 
+      text-align: center; 
+      font-size: 12px; 
+      color: var(--text-muted); 
+      margin-top: 15px; 
+      height: 15px; 
+    }
   </style>
 </head>
 <body>
 
-<div class="dashboard-card">
-  <div class="header">
-    <h2>Invite Generator ✨</h2>
-    <p>අමුත්තාගේ නම ඇතුළත් කර Preview එක බලන්න</p>
+<div class="dashboard-wrapper">
+  <div class="header-title">
+    <h2><i class="fa-solid fa-envelope-open-text" style="color: #d4af37; margin-right: 8px;"></i> Invitation System</h2>
+    <p>Enter guest details to generate digital invite</p>
   </div>
 
-  <div class="input-group">
-    <input type="text" id="guestName" placeholder="උදා: Mr. Sandusha Avishkha" autocomplete="off">
+  <div class="input-wrapper">
+    <input type="text" id="guestName" placeholder="e.g. Mr. John Doe" autocomplete="off">
   </div>
 
-  <button class="btn btn-primary" onclick="generatePreview()">👁️ Generate Preview</button>
+  <button class="btn btn-main" id="btnGenerate" onclick="processGeneration()">
+    <i class="fa-solid fa-gear"></i> Generate Link
+  </button>
 
-  <div class="preview-container" id="previewArea">
-    <p>Card Preview:</p>
+  <!-- These buttons will fade in after generation -->
+  <div id="actionButtons" class="hidden">
+    <button class="btn btn-preview" onclick="togglePreview()">
+      <i class="fa-solid fa-eye"></i> View Preview
+    </button>
+    <button class="btn btn-whatsapp" onclick="sendWhatsApp()">
+      <i class="fa-brands fa-whatsapp"></i> Send via WhatsApp
+    </button>
+  </div>
+
+  <div class="preview-section hidden" id="previewArea">
     <canvas id="inviteCanvas"></canvas>
-    
-    <button class="btn btn-whatsapp" id="waBtn" onclick="downloadAndShare()">📲 Download & Send WhatsApp</button>
   </div>
   
-  <div class="status-msg" id="statusText"></div>
+  <div class="status-text" id="statusMessage"></div>
 </div>
 
 <script>
-  // --- වැදගත්: ඔයාගේ ලින්ක් ටික මෙතන Update කරන්න ---
-  var GITHUB_SITE_URL = "https://avishkhaacc.github.io/YOUR_REPO_NAME/index.html"; 
-  var GAS_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"; 
+  // =========================================================================
+  // 🔴 🔴 🔴 PASTE YOUR LINKS HERE 🔴 🔴 🔴
+  // =========================================================================
+  
+  // 1. Paste your GitHub Pages Link here:
+  var GITHUB_SITE_URL = "https://avishkhaacc.github.io/Hiru/index.html"; 
+  
+  // 2. Paste your Google Apps Script Web App URL here:
+  var GAS_URL = "https://script.google.com/macros/s/AKfycbzC-Ghr2E1iSTy4VM22Ftiu-_Z_1NkFY6cOqnvBFfFTXF3vSUshCetwF83s0CU25DDOqQ/exec"; 
+  
+  // =========================================================================
 
   var canvas = document.getElementById('inviteCanvas');
   var ctx = canvas.getContext('2d');
   var finalLink = "";
   var generatedDataUrl = "";
   var imageLoaded = false;
+  var currentGuestName = "";
   
-  // පින්තූරය load කරගැනීම (CORS ප්‍රශ්න නොවෙන්න Anonymous දානවා)
+  // Load the background image
   var inviteImg = new Image();
   inviteImg.crossOrigin = "Anonymous";
-  inviteImg.src = 'invite.jpg'; // GitHub එකේ තියෙන පින්තූරයම ගනී
-  
+  inviteImg.src = 'invite.jpg'; 
   inviteImg.onload = function() { imageLoaded = true; };
 
-  // --- 1. Preview එක Generate කිරීම ---
-  function generatePreview() {
+  // Trigger generation on 'Enter' key press
+  document.getElementById('guestName').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      processGeneration();
+    }
+  });
+
+  function processGeneration() {
     var fullName = document.getElementById('guestName').value.trim();
-    if (!fullName) { alert("කරුණාකර නම ඇතුළත් කරන්න!"); return; }
-    if (!imageLoaded) { alert("පින්තූරය Load වෙමින් පවතී. සුළු මොහොතකින් නැවත උත්සාහ කරන්න."); return; }
+    if (!fullName) { 
+      alert("Please enter a guest name."); 
+      return; 
+    }
+    if (!imageLoaded) { 
+      alert("Background image is still loading. Please try again in a moment."); 
+      return; 
+    }
 
-    document.getElementById('statusText').innerText = "Generating Preview...";
+    document.getElementById('statusMessage').innerText = "Processing details...";
+    currentGuestName = fullName;
 
-    // Title සහ Name වෙන් කිරීම
+    // Parse title and name
     var title = "";
     var nameOnly = fullName;
     var match = fullName.match(/^(Mr|Mrs|Miss|Rev)\.?\s*(.*)/i); 
@@ -118,21 +230,17 @@
       nameOnly = match[2]; 
     }
 
-    // Canvas එකේ සයිස් එක ඔරිජිනල් පින්තූරයේ සයිස් එකට හදනවා
+    // Prepare Canvas
     canvas.width = inviteImg.width;
     canvas.height = inviteImg.height;
-
-    // 1. පින්තූරය අඳිනවා
     ctx.drawImage(inviteImg, 0, 0, canvas.width, canvas.height);
 
-    // 2. අකුරු සහ ඉරි වල Styles (ඔරිජිනල් පින්තූරයේ pixels අනුව ගණනය කිරීම)
     var cw = canvas.width;
     var ch = canvas.height;
-    
-    // Y අක්ෂයේ ඉරි වදින්න ඕනේ තැන (51.5%)
     var strikeY = ch * 0.515; 
-    ctx.lineWidth = 2; // ඉරේ මහත
-    ctx.strokeStyle = "rgba(30, 30, 30, 0.8)"; // ඉරේ පාට
+    
+    ctx.lineWidth = 2; 
+    ctx.strokeStyle = "rgba(30, 30, 30, 0.8)"; 
 
     function drawStrike(leftPct, widthPct) {
       ctx.beginPath();
@@ -141,65 +249,77 @@
       ctx.stroke();
     }
 
-    // අදාළ නැති title කපනවා (CSS වල ප්‍රතිශතම පාවිච්චි කළා)
+    // Strike logic based on title
     if(title === "MR") { drawStrike(7.5, 6.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); } 
     else if (title === "MRS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(24.5, 6.5); } 
     else if (title === "MISS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(18.5, 6); } 
     else if (title === "REV") { drawStrike(14, 4.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); }
 
-    // 3. නම ලියනවා
-    // ෆොන්ට් සයිස් එක පින්තූරයේ පළලට සාපේක්ෂව හදලා තියෙන්නේ
+    // Write Name
     var fontSize = Math.floor(cw * 0.025); 
     ctx.font = fontSize + "px 'Times New Roman', serif";
     ctx.fillStyle = "#222";
     ctx.textBaseline = "middle";
-    // X=45%, Y=50.8%
     ctx.fillText(nameOnly.toUpperCase(), cw * 0.45, ch * 0.508); 
 
-    // Canvas එකෙන් අලුත් පින්තූරය (Data URL) හදාගන්නවා
+    // Generate Base64 Image
     generatedDataUrl = canvas.toDataURL("image/jpeg", 0.9);
 
-    // 4. Base64 Link එක හදනවා (Secret Code)
+    // Generate Encoded Link (Secret Code)
     var encodedName = btoa(unescape(encodeURIComponent(fullName)));
-    finalLink = https://avishkhaacc.github.io/Hiru/ + "?invite=" + encodedName;
+    finalLink = GITHUB_SITE_URL + "?invite=" + encodedName;
 
-    // 5. Google Sheet එකට Background එකෙන් දත්ත යවනවා
-    var fetchUrl = https://script.google.com/macros/s/AKfycbzC-Ghr2E1iSTy4VM22Ftiu-_Z_1NkFY6cOqnvBFfFTXF3vSUshCetwF83s0CU25DDOqQ/exec + "?name=" + encodeURIComponent(fullName) + "&phone=N/A";
-    fetch(fetchUrl).catch(e => console.log("GAS Save Error"));
+    // Save to Google Sheets silently
+    var fetchUrl = GAS_URL + "?name=" + encodeURIComponent(fullName) + "&phone=N/A";
+    fetch(fetchUrl).catch(e => console.log("Data save initiated."));
 
-    // Preview එක පෙන්නනවා
-    document.getElementById('previewArea').style.display = "block";
-    document.getElementById('waBtn').style.display = "flex";
-    document.getElementById('statusText').innerText = "Preview Ready! You can now send it.";
+    // Hide Generate button, show action buttons with fade-in effect
+    document.getElementById('btnGenerate').classList.add('hidden');
+    
+    var actionBtns = document.getElementById('actionButtons');
+    actionBtns.classList.remove('hidden');
+    actionBtns.classList.add('fade-in');
+    
+    document.getElementById('statusMessage').innerText = "Link generated successfully!";
   }
 
-  // --- 2. Download කරලා WhatsApp එක Open කිරීම ---
-  function downloadAndShare() {
+  function togglePreview() {
+    var previewArea = document.getElementById('previewArea');
+    if(previewArea.classList.contains('hidden')) {
+      previewArea.classList.remove('hidden');
+      previewArea.classList.add('fade-in');
+    } else {
+      previewArea.classList.add('hidden');
+      previewArea.classList.remove('fade-in');
+    }
+  }
+
+  function sendWhatsApp() {
     if(!generatedDataUrl) return;
 
-    // 1. පින්තූරය ඩවුන්ලෝඩ් කරනවා
+    // 1. Auto-Download the Image
+    var safeName = currentGuestName.replace(/[^a-zA-Z0-9]/g, '_');
     var link = document.createElement('a');
-    link.download = 'Invitation_' + document.getElementById('guestName').value.trim() + '.jpg';
+    link.download = 'Invitation_' + safeName + '.jpg';
     link.href = generatedDataUrl;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    // 2. WhatsApp එකට යවන මැසේජ් එක ලෑස්ති කරනවා
-    var msg = "We joyfully invite you to share in our happiness as we celebrate our wedding day! 💍✨\n\n" +
+    // 2. Prepare English WhatsApp Message
+    var msg = "We joyfully invite you to share in our happiness as we celebrate our wedding day! \n\n" +
               "📍 Venue: Dhanamuthu Royal Banquet Hall, Negombo\n" +
               "⏱️ Poruwa Ceremony: 10:21 AM\n\n" +
-              "View your digital 3D invite and location map here: \n" + finalLink;
+              "Please click the link below to view your digital 3D invitation and location map:\n" + 
+              finalLink;
 
-    // 3. WhatsApp Contact Picker එක ඕපන් කරනවා (අංකයක් නැතුව)
-    // මේ ලින්ක් එකෙන් කෙලින්ම WhatsApp ඇප් එක ඕපන් වෙලා කාවද Select කරන්නේ අහනවා
+    // 3. Open WhatsApp (Universal link for contact selection)
     var wpUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(msg);
     
-    // පොඩි වෙලාවක් දීලා WhatsApp ඕපන් කරනවා (Download එක වෙන්න ඉඩ දීලා)
     setTimeout(function() {
       window.open(wpUrl, '_blank');
-      document.getElementById('statusText').innerText = "Image Downloaded & WhatsApp Opened! Please attach the image.";
-    }, 500);
+      document.getElementById('statusMessage').innerText = "Image downloaded. Please attach it in WhatsApp!";
+    }, 600);
   }
 </script>
 
