@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hiruni & Udayanga's Wedding Invitation</title>
+  
+  <!-- Professional Icons (FontAwesome) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts for the Invitation -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -54,18 +60,53 @@
       z-index: 2; backface-visibility: hidden;
     }
 
-    /* --- Inner Card --- */
+    /* --- Inner Card Container --- */
     .inner-card {
-      position: absolute; top: 5%; left: 5%; width: 90%; height: 90%; 
+      position: absolute; top: 5%; left: 5%; width: 300px; height: 420px; 
       transform: translateZ(-1px); opacity: 0; z-index: 1;
       transition: transform 2s cubic-bezier(0.2, 1, 0.3, 1), opacity 1.5s ease;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border-radius: 5px;
+      overflow: hidden;
     }
-    .inner-card img { width: 100%; height: 100%; display: block; border-radius: 5px; }
+
+    /* --- HTML/CSS Based Invitation Content --- 
+       (High-Res scaled down for crisp text rendering) */
+    .invite-content-wrapper {
+      position: absolute; top: 0; left: 0;
+      width: 600px; height: 840px; /* Double size for high resolution */
+      transform: scale(0.5); /* Scale down to fit 300x420 */
+      transform-origin: top left;
+      background-image: url('invite.jpg'); /* Blank border image */
+      background-size: cover; background-position: center; background-color: white;
+      color: #222; text-align: center;
+      padding: 95px 60px 60px 60px; box-sizing: border-box;
+    }
+    
+    .t-heading { font-size: 14px; letter-spacing: 2px; margin-bottom: 12px; font-weight: bold; }
+    .t-name { font-family: 'Great Vibes', cursive; font-size: 58px; margin: 0; font-weight: normal; color: #111; line-height: 1; }
+    .t-parents { font-size: 12px; margin: 4px 0 22px 0; line-height: 1.4; color: #333; }
+    .t-text { font-size: 13px; line-height: 1.5; margin: 18px 0; color: #333; }
+    
+    .t-dynamic-row { display: flex; align-items: flex-end; justify-content: center; gap: 4px; font-size: 14px; margin: 25px 0; }
+    .t-titles { display: flex; gap: 2px; letter-spacing: 1px; }
+    
+    .t-guest-name { 
+      flex-grow: 1; border-bottom: 2px dotted #222; text-align: center; 
+      padding-bottom: 2px; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; 
+    }
+    
+    .t-date-row { display: flex; justify-content: center; align-items: center; gap: 16px; font-size: 14px; margin: 8px 0; font-weight: bold; }
+    .t-date-num { font-size: 38px; border-left: 2px solid #222; border-right: 2px solid #222; padding: 0 16px; line-height: 1; }
+    .t-venue { font-size: 12px; line-height: 1.5; margin-top: 12px; }
+    .t-footer { font-size: 10px; font-weight: bold; margin-top: 25px; letter-spacing: 1px; }
+    
+    /* CSS Strike-through for titles */
+    .strike { text-decoration: line-through; color: #666; }
 
     /* --- Action Buttons --- */
     .action-buttons {
-      position: absolute; bottom: 55px; /* Watermark එකට ඉඩ තියලා උඩට ගත්තා */
+      position: absolute; bottom: 55px;
       display: flex; gap: 15px; justify-content: center; width: 100%;
       opacity: 0; z-index: 20; transform: translateY(20px);
       transition: opacity 1s ease 2.5s, transform 1s ease 2.5s;
@@ -73,12 +114,12 @@
     .btn {
       padding: 10px 20px; background: rgba(212, 175, 55, 0.95); color: #fff;
       text-decoration: none; border-radius: 25px; font-size: 12px; font-weight: bold;
-      font-family: sans-serif; text-transform: uppercase; letter-spacing: 1px;
+      font-family: 'Segoe UI', sans-serif; text-transform: uppercase; letter-spacing: 1px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: background 0.3s;
       display: flex; align-items: center; gap: 8px;
     }
     .btn:hover { background: #fff; color: #d4af37; }
-    .icon { font-size: 16px; }
+    .btn i { font-size: 14px; } /* FontAwesome icon sizing */
 
     /* --- Animation States --- */
     .open-state .desk-bg { filter: blur(8px) brightness(0.3); transform: scale(1.1); }
@@ -87,34 +128,17 @@
     .open-state .inner-card { transform: translateZ(50px) translateY(-20px) scale(0.9); opacity: 1; z-index: 10; }
     .open-state .action-buttons { opacity: 1; transform: translateY(0); }
 
-    /* --- නම සහ කැපෙන ඉරි --- */
-    .text-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 11; pointer-events: none; }
-    
-    .strike-line { position: absolute; height: 1px; background: rgba(30,30,30,0.8); top: 51.5%; display: none; }
-    #strike-rev { left: 7.5%; width: 6.5%; }
-    #strike-mr { left: 14%; width: 4.5%; }
-    #strike-mrs { left: 18.5%; width: 6%; }
-    #strike-miss { left: 24.5%; width: 6.5%; }
-
-    #guest-name { 
-      position: absolute; top: 50%; left: 45%; 
-      font-size: 11px; 
-      font-weight: normal; 
-      color: #222; font-family: 'Times New Roman', serif; 
-      white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px;
-    }
-
     /* --- Advanced Footer Watermark --- */
     .watermark-footer {
       position: fixed; bottom: 8px; width: 100%; text-align: center;
       z-index: 999; opacity: 0.8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-      font-size: 9px; color: #ffffff; /* සුදු පැහැය */
-      pointer-events: auto; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); /* කියවීමේ පහසුවට Shadow එකක් */
+      font-size: 9px; color: #ffffff; 
+      pointer-events: auto; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); 
       line-height: 1.4; letter-spacing: 0.8px; padding: 0 10px; box-sizing: border-box;
     }
     .watermark-footer a { color: #ffffff; text-decoration: none; transition: all 0.3s ease; }
     .watermark-footer a:hover { color: #d4af37; text-shadow: 0 0 5px rgba(212,175,55,0.5); }
-    .watermark-footer .brand { font-weight: bold; font-size: 10px; color: #d4af37; } /* DesignVerse එක රන්වන් පාටින් */
+    .watermark-footer .brand { font-weight: bold; font-size: 10px; color: #d4af37; }
   </style>
 </head>
 <body id="body">
@@ -137,45 +161,79 @@
   <div class="envelope-wrapper" onclick="openEnvelope()">
     <div class="envelope-cover"></div>
     
+    <!-- === HTML Generated Inner Card === -->
     <div class="inner-card" id="inviteCard">
-      <img src="invite.jpg" alt="Wedding Invite"> 
-      
-      <div class="text-layer">
-        <div class="strike-line" id="strike-rev"></div>
-        <div class="strike-line" id="strike-mr"></div>
-        <div class="strike-line" id="strike-mrs"></div>
-        <div class="strike-line" id="strike-miss"></div>
-        <div id="guest-name"></div>
+      <div class="invite-content-wrapper">
+        <div class="t-heading">WEDDING INVITATION</div>
+        
+        <div class="t-name">Hiruni</div>
+        <div class="t-parents">DAUGHTER OF MR. SURAJ MUHANDIRAMGE<br>& MRS. CHAMARIE HETTIARACHCHI</div>
+        
+        <div class="t-name">Udayanga</div>
+        <div class="t-parents">SON OF MR. J.P. MAITHREEPALA<br>& MRS. W.I.M. AMARATHUNGA</div>
+        
+        <div class="t-text">TOGETHER WITH OUR PARENTS<br>REQUEST THE PLEASURE THE PRESENCE OF</div>
+        
+        <div class="t-dynamic-row">
+          <div class="t-titles">
+            <span id="lbl-rev">REV</span>/
+            <span id="lbl-mr">MR</span>/
+            <span id="lbl-mrs">MRS</span>/
+            <span id="lbl-miss">MISS</span>
+          </div>
+          <div class="t-guest-name" id="lbl-guest-name"></div>
+        </div>
+        
+        <div class="t-text">TO GRACE THIS OCCASION WHEN THEY<br>PLEDGE THEIR LOVE TO EACH OTHER</div>
+        
+        <div style="margin-top: 15px;">
+          <div style="font-size: 13px; letter-spacing: 1px;">THURSDAY</div>
+          <div class="t-date-row">
+            <span>APRIL</span>
+            <span class="t-date-num">23</span>
+            <span>2026</span>
+          </div>
+          <div class="t-venue">
+            FROM 8.30 TO 4.00 P.M.<br>
+            (PORUWA CEREMONY AT 10.21 A.M.)<br>
+            AT <strong>DHANAMUTHU ROYAL BANQUET HALL</strong><br>
+            DAGONNA, NEGOMBO
+          </div>
+          <div class="t-footer">HIRUNI : 076-2567965 / UDAYANGA : 076-4816775</div>
+        </div>
       </div>
     </div>
+    <!-- ================================== -->
+
   </div>
 
   <div class="action-buttons">
-    <a href="https://maps.app.goo.gl/PCoK5qeG7p4si1CK7" target="_blank" class="btn"><span class="icon">📍</span> View Map</a>
-    <a href="javascript:void(0)" onclick="addToCalendar()" class="btn"><span class="icon">📅</span> Add to Calendar</a>
+    <a href="YOUR_GOOGLE_MAPS_LINK_HERE" target="_blank" class="btn">
+      <i class="fa-solid fa-location-dot"></i> View Map
+    </a>
+    <a href="javascript:void(0)" onclick="addToCalendar()" class="btn">
+      <i class="fa-regular fa-calendar-plus"></i> Add to Calendar
+    </a>
   </div>
 </div>
 
-<!-- සුදු පැහැති, බැලන්ස් කළ Watermark එක -->
 <div class="watermark-footer">
-  <a href="https://www.facebook.com/sanduwaofficial/" target="_blank">
+  <a href="YOUR_LINK_HERE" target="_blank">
     © 2025 <span class="brand">DesignVerse</span> by Sandusha Avishkha. All rights reserved.<br>
     Crafted with passion in Minuwangoda, Sri Lanka
   </a>
 </div>
 
 <script>
-  // URL එකෙන් Secret Code එක (invite) අරගෙන නම බවට පත් කරන Logic එක
+  // Secret Code (Base64) Decode Logic
   var urlParams = new URLSearchParams(window.location.search);
   var inviteCode = urlParams.get('invite');
   var fullName = "Guest"; 
 
   if (inviteCode) {
     try {
-      // Base64 Code එක Decode කරනවා
       fullName = decodeURIComponent(escape(atob(inviteCode))); 
     } catch(e) {
-      // Code එක වැරදි නම් නිකන්ම නම ගන්නවා (Fallback)
       fullName = urlParams.get('name') || "Guest";
     }
   } else {
@@ -196,24 +254,26 @@
       nameOnly = match[2]; 
     }
 
-    document.getElementById('guest-name').innerText = nameOnly;
+    // Assign name to HTML element
+    document.getElementById('lbl-guest-name').innerText = nameOnly;
 
-    if(title === "MR") {
-      document.getElementById('strike-rev').style.display = "block";
-      document.getElementById('strike-mrs').style.display = "block";
-      document.getElementById('strike-miss').style.display = "block";
-    } else if (title === "MRS") {
-      document.getElementById('strike-rev').style.display = "block";
-      document.getElementById('strike-mr').style.display = "block";
-      document.getElementById('strike-miss').style.display = "block";
-    } else if (title === "MISS") {
-      document.getElementById('strike-rev').style.display = "block";
-      document.getElementById('strike-mr').style.display = "block";
-      document.getElementById('strike-mrs').style.display = "block";
-    } else if (title === "REV") {
-      document.getElementById('strike-mr').style.display = "block";
-      document.getElementById('strike-mrs').style.display = "block";
-      document.getElementById('strike-miss').style.display = "block";
+    // Apply perfect CSS strike-through based on Title
+    if(title === "MR") { 
+      document.getElementById('lbl-rev').className = "strike";
+      document.getElementById('lbl-mrs').className = "strike";
+      document.getElementById('lbl-miss').className = "strike";
+    } else if (title === "MRS") { 
+      document.getElementById('lbl-rev').className = "strike";
+      document.getElementById('lbl-mr').className = "strike";
+      document.getElementById('lbl-miss').className = "strike";
+    } else if (title === "MISS") { 
+      document.getElementById('lbl-rev').className = "strike";
+      document.getElementById('lbl-mr').className = "strike";
+      document.getElementById('lbl-mrs').className = "strike";
+    } else if (title === "REV") { 
+      document.getElementById('lbl-mr').className = "strike";
+      document.getElementById('lbl-mrs').className = "strike";
+      document.getElementById('lbl-miss').className = "strike";
     }
   };
 
