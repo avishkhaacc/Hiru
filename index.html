@@ -65,7 +65,7 @@
 
     /* --- Action Buttons --- */
     .action-buttons {
-      position: absolute; bottom: 40px; /* කාඩ් එකට ගොඩක් පහළින් දැම්මා */
+      position: absolute; bottom: 55px; /* Watermark එකට ඉඩ තියලා උඩට ගත්තා */
       display: flex; gap: 15px; justify-content: center; width: 100%;
       opacity: 0; z-index: 20; transform: translateY(20px);
       transition: opacity 1s ease 2.5s, transform 1s ease 2.5s;
@@ -84,16 +84,13 @@
     .open-state .desk-bg { filter: blur(8px) brightness(0.3); transform: scale(1.1); }
     .open-state .dark-overlay { background: rgba(0,0,0,0.5); }
     .open-state .envelope-wrapper { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateZ(100px); pointer-events: none; }
-    
-    /* කාඩ් එක ස්ක්‍රීන් එකට වඩා පොඩි වෙන්න scale(0.9) දැම්මා. ටිකක් උඩට වෙන්න translateY(-20px) දැම්මා */
     .open-state .inner-card { transform: translateZ(50px) translateY(-20px) scale(0.9); opacity: 1; z-index: 10; }
     .open-state .action-buttons { opacity: 1; transform: translateY(0); }
 
-    /* --- නම සහ කැපෙන ඉරි (Matched to card print size) --- */
+    /* --- නම සහ කැපෙන ඉරි --- */
     .text-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 11; pointer-events: none; }
     
     .strike-line { position: absolute; height: 1px; background: rgba(30,30,30,0.8); top: 51.5%; display: none; }
-    /* ඉරි වල දිග සහ ස්ථානය තවත් නිවැරදි කළා */
     #strike-rev { left: 7.5%; width: 6.5%; }
     #strike-mr { left: 14%; width: 4.5%; }
     #strike-mrs { left: 18.5%; width: 6%; }
@@ -101,20 +98,23 @@
 
     #guest-name { 
       position: absolute; top: 50%; left: 45%; 
-      font-size: 11px; /* ෆොන්ට් එක ගොඩක් පොඩි කළා */
-      font-weight: normal; /* මහත ගතිය අයින් කළා කාඩ් එකට මැච් වෙන්න */
+      font-size: 11px; 
+      font-weight: normal; 
       color: #222; font-family: 'Times New Roman', serif; 
       white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px;
     }
 
-    /* --- Footer Watermark --- */
+    /* --- Advanced Footer Watermark --- */
     .watermark-footer {
-      position: fixed; bottom: 10px; width: 100%; text-align: center;
-      z-index: 999; opacity: 0.7; font-family: sans-serif; font-size: 11px; color: #fff;
-      pointer-events: auto; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      position: fixed; bottom: 8px; width: 100%; text-align: center;
+      z-index: 999; opacity: 0.8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      font-size: 9px; color: #ffffff; /* සුදු පැහැය */
+      pointer-events: auto; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); /* කියවීමේ පහසුවට Shadow එකක් */
+      line-height: 1.4; letter-spacing: 0.8px; padding: 0 10px; box-sizing: border-box;
     }
-    .watermark-footer a { color: #d4af37; text-decoration: none; font-weight: bold; letter-spacing: 0.5px; }
-    .watermark-footer a:hover { color: #fff; text-decoration: underline; }
+    .watermark-footer a { color: #ffffff; text-decoration: none; transition: all 0.3s ease; }
+    .watermark-footer a:hover { color: #d4af37; text-shadow: 0 0 5px rgba(212,175,55,0.5); }
+    .watermark-footer .brand { font-weight: bold; font-size: 10px; color: #d4af37; } /* DesignVerse එක රන්වන් පාටින් */
   </style>
 </head>
 <body id="body">
@@ -151,18 +151,36 @@
   </div>
 
   <div class="action-buttons">
-    <a href="YOUR_GOOGLE_MAPS_LINK_HERE" target="_blank" class="btn"><span class="icon">📍</span> View Map</a>
-    <a href="YOUR_CALENDAR_EVENT_LINK_HERE" target="_blank" class="btn"><span class="icon">📅</span> Add to Calendar</a>
+    <a href="https://maps.app.goo.gl/PCoK5qeG7p4si1CK7" target="_blank" class="btn"><span class="icon">📍</span> View Map</a>
+    <a href="javascript:void(0)" onclick="addToCalendar()" class="btn"><span class="icon">📅</span> Add to Calendar</a>
   </div>
 </div>
 
+<!-- සුදු පැහැති, බැලන්ස් කළ Watermark එක -->
 <div class="watermark-footer">
-  <a href="YOUR_LINK_HERE" target="_blank"> © 2025 DesignVerse by Sandusha Avishkha. All rights reserved. Crafted with passion in Minuwangoda, Sri Lanka</a>
+  <a href="https://www.facebook.com/sanduwaofficial/" target="_blank">
+    © 2025 <span class="brand">DesignVerse</span> by Sandusha Avishkha. All rights reserved.<br>
+    Crafted with passion in Minuwangoda, Sri Lanka
+  </a>
 </div>
 
 <script>
+  // URL එකෙන් Secret Code එක (invite) අරගෙන නම බවට පත් කරන Logic එක
   var urlParams = new URLSearchParams(window.location.search);
-  var fullName = urlParams.get('name') || "Guest"; 
+  var inviteCode = urlParams.get('invite');
+  var fullName = "Guest"; 
+
+  if (inviteCode) {
+    try {
+      // Base64 Code එක Decode කරනවා
+      fullName = decodeURIComponent(escape(atob(inviteCode))); 
+    } catch(e) {
+      // Code එක වැරදි නම් නිකන්ම නම ගන්නවා (Fallback)
+      fullName = urlParams.get('name') || "Guest";
+    }
+  } else {
+    fullName = urlParams.get('name') || "Guest"; 
+  }
 
   window.onload = function() {
     var loader = document.getElementById('loader');
@@ -209,6 +227,38 @@
       confetti({ particleCount: 50, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#d4af37', '#fff'] });
       confetti({ particleCount: 50, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#d4af37', '#fff'] });
     }, 1500);
+  }
+
+  // --- Native Calendar App Logic ---
+  function addToCalendar() {
+    var eventTitle = "Hiruni & Udayanga's Wedding";
+    var location = "Dhanamuthu Royal Banquet Hall, Dagonna, Negombo";
+    var description = "We joyfully invite you to share in our happiness as we celebrate our wedding day!\\n\\nPoruwa Ceremony: 10:21 AM\\n\\nWe look forward to seeing you there!";
+    
+    var startTime = "20260423T030000Z"; 
+    var endTime = "20260423T110000Z";   
+
+    var icsData = "BEGIN:VCALENDAR\n" +
+                  "VERSION:2.0\n" +
+                  "PRODID:-//AviXtech//WeddingInvite//EN\n" +
+                  "BEGIN:VEVENT\n" +
+                  "UID:" + new Date().getTime() + "@avixtech.com\n" +
+                  "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + "Z\n" +
+                  "DTSTART:" + startTime + "\n" +
+                  "DTEND:" + endTime + "\n" +
+                  "SUMMARY:" + eventTitle + "\n" +
+                  "DESCRIPTION:" + description + "\n" +
+                  "LOCATION:" + location + "\n" +
+                  "END:VEVENT\n" +
+                  "END:VCALENDAR";
+
+    var blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+    var link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.setAttribute('download', 'Wedding_Invitation.ics');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 </script>
 </body>
