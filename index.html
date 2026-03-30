@@ -3,75 +3,201 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wedding Invitation</title>
+  <title>Hiruni & Udayanga's Wedding Invitation</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <style>
-    body, html { margin: 0; padding: 0; height: 100%; background: #000; overflow: hidden; font-family: serif; }
+    body, html { margin: 0; padding: 0; height: 100%; background: #000; overflow: hidden; font-family: 'Times New Roman', serif; color: #fff; }
     
-    /* පින්තූර කෙලින්ම ෆෝල්ඩරයෙන් ගන්නවා */
+    /* --- 1. Loading Screen (Professional Look) --- */
+    #loader {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #0d0d0d; z-index: 9999;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      transition: opacity 1.5s ease;
+    }
+    .loader-content { text-align: center; opacity: 0; animation: fadeIn 1s ease forwards 0.5s; }
+    .spinner {
+      border: 3px solid rgba(212, 175, 55, 0.1); border-top: 3px solid #d4af37;
+      border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    #loader p { color: #d4af37; font-size: 18px; letter-spacing: 2px; margin: 0; }
+
+    /* --- 2. 3D Scene Container --- */
+    .desk-container {
+      position: relative; width: 100%; height: 100%;
+      perspective: 1500px; /* 3D depth effect */
+      display: flex; justify-content: center; align-items: center;
+    }
+
+    /* පසුබිම: මේසය (table.jpg) */
     .desk-bg {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background-image: url('table.jpg'); 
       background-size: cover; background-position: center;
-      transition: filter 1s; z-index: 1;
+      transition: filter 2s ease, transform 2s ease; z-index: 1;
     }
 
-    .dark-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0); transition: background 1.5s; z-index: 2; pointer-events: none; }
+    /* අඳුරු වෙන Overlay */
+    .dark-overlay { 
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+      background: rgba(0,0,0,0); transition: background 2s ease; z-index: 2; pointer-events: none; 
+    }
 
+    /* --- 3. 3D Envelope Container --- */
+    .envelope-wrapper {
+      position: relative; width: 320px; height: 450px;
+      z-index: 4; cursor: pointer;
+      transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d; /* 3D rotate වෙන්න අවශ්‍යයි */
+      transform: rotateX(15deg) rotateY(-10deg) rotateZ(0deg); /* ඩෙස්ක් එක උඩ කෝණය */
+    }
+
+    /* පිටත කවරය: (card.png) */
     .envelope-cover {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-5deg);
-      width: 320px; height: 450px;
+      position: absolute; width: 100%; height: 100%;
       background-image: url('card.png'); 
       background-size: contain; background-repeat: no-repeat; background-position: center;
-      cursor: pointer; z-index: 4; transition: all 1s;
+      z-index: 2; backface-visibility: hidden; /* පිටුපස නොපෙනේ */
     }
 
+    /* --- 4. ඇතුළේ කාඩ් එක (invite.jpg) --- */
     .inner-card {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8) rotate(-5deg); 
-      width: 300px; height: 420px; opacity: 0; z-index: 3;
-      transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      position: absolute; top: 5%; left: 5%; width: 90%; height: 90%; 
+      transform: translateZ(-1px); /* කවරයට පොඩ්ඩක් පිටිපස්සෙන් */
+      opacity: 0; z-index: 1;
+      transition: transform 2s cubic-bezier(0.2, 1, 0.3, 1), opacity 1.5s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
     .inner-card img { width: 100%; height: 100%; display: block; border-radius: 5px; }
 
-    /* Animation */
-    .open-state .desk-bg { filter: blur(5px); }
-    .open-state .dark-overlay { background: rgba(0,0,0,0.6); }
-    .open-state .envelope-cover { transform: translate(-50%, -40%) scale(0.9) rotate(-5deg); opacity: 0.4; }
-    .open-state .inner-card { transform: translate(-50%, -50%) scale(1.1) rotate(0deg); opacity: 1; z-index: 10; }
+    /* --- 5. Action Buttons (Map & Calendar) --- */
+    .action-buttons {
+      position: absolute; bottom: 80px; /* කාඩ් එකට පහළින් */
+      display: flex; gap: 15px; justify-content: center; width: 100%;
+      opacity: 0; z-index: 20; transform: translateY(20px);
+      transition: opacity 1s ease 2.5s, transform 1s ease 2.5s; /* කාඩ් එක ආවට පස්සේ එන්නේ */
+    }
+    .btn {
+      padding: 10px 20px; background: rgba(212, 175, 55, 0.9); color: #fff;
+      text-decoration: none; border-radius: 25px; font-size: 13px; font-weight: bold;
+      font-family: sans-serif; text-transform: uppercase; letter-spacing: 1px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: background 0.3s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn:hover { background: #fff; color: #d4af37; }
 
-    /* නම සහ ඉරි */
-    .text-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 11; }
-    .strike-line { position: absolute; height: 2px; background: #333; top: 52%; display: none; }
-    #strike-rev { left: 8%; width: 9%; }
-    #strike-mr { left: 18%; width: 7%; }
-    #strike-mrs { left: 26%; width: 9%; }
-    #strike-miss { left: 36%; width: 10%; }
+    /* icons (simple emoji) */
+    .icon { font-size: 16px; }
 
-    #guest-name { position: absolute; top: 50.5%; left: 48%; font-size: 16px; font-weight: bold; color: #000; font-family: 'Times New Roman', serif; }
+    /* --- Click කරාට පස්සේ වෙනස් වෙන දේවල් (Animation) --- */
+    .open-state .desk-bg { filter: blur(8px) brightness(0.3); transform: scale(1.1); }
+    .open-state .dark-overlay { background: rgba(0,0,0,0.5); }
+    
+    /* කවරය කෙලින් වෙලා මතු වෙනවා */
+    .open-state .envelope-wrapper { 
+      transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateZ(100px); 
+      pointer-events: none; /* තව සැරයක් click කරන්න බැහැ */
+    }
+    
+    /* ඇතුළේ කොළේ කවරය පිටිපස්සෙන් මතු වෙලා, කෙලින් වෙලා, zoom වෙනවා */
+    .open-state .inner-card {
+      transform: translateZ(50px) scale(1.2); /* කවරයට වඩා ඉස්සරහට ඇවිත් ලොකු වෙනවා */
+      opacity: 1; z-index: 10;
+    }
+
+    /* Action Buttons පෙනෙන්න ගන්නවා */
+    .open-state .action-buttons { opacity: 1; transform: translateY(0); }
+
+    /* --- 6. නම සහ කැපෙන ඉරි (Adjusted) --- */
+    .text-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 11; pointer-events: none; }
+    
+    .strike-line { position: absolute; height: 1px; background: rgba(20,20,20,0.7); top: 51.5%; display: none; }
+    #strike-rev { left: 8.5%; width: 8.5%; }
+    #strike-mr { left: 18%; width: 6%; }
+    #strike-mrs { left: 25.5%; width: 8%; }
+    #strike-miss { left: 34.5%; width: 9%; }
+
+    #guest-name { 
+      position: absolute; top: 50%; left: 46%; 
+      font-size: 13px; font-weight: bold; color: #000; font-family: 'Times New Roman', serif; 
+      white-space: nowrap; text-transform: uppercase;
+    }
+
+    /* --- 7. Footer Watermark (Fixed) --- */
+    .watermark-footer {
+      position: fixed; bottom: 15px; width: 100%; text-align: center;
+      z-index: 999; opacity: 0.6; font-family: sans-serif; font-size: 10px; color: #fff;
+      pointer-events: auto; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    .watermark-footer a { color: #d4af37; text-decoration: none; font-weight: bold; margin-left: 3px; }
+    .watermark-footer a:hover { color: #fff; }
   </style>
 </head>
-<body>
+<body id="body">
 
-<div class="desk-bg"></div>
-<div class="dark-overlay"></div>
-<div class="envelope-cover" onclick="openEnvelope()"></div>
-
-<div class="inner-card" id="inviteCard">
-  <img src="invite.jpg" alt="Wedding Invite"> 
-  <div class="text-layer">
-    <div class="strike-line" id="strike-rev"></div>
-    <div class="strike-line" id="strike-mr"></div>
-    <div class="strike-line" id="strike-mrs"></div>
-    <div class="strike-line" id="strike-miss"></div>
-    <div id="guest-name"></div>
+<div id="loader">
+  <div class="loader-content">
+    <div class="spinner"></div>
+    <p>HIRUNI & UDAYANGA</p>
   </div>
 </div>
 
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="desk-container">
+  <div class="desk-bg"></div>
+  <div class="dark-overlay"></div>
+
+  <div class="envelope-wrapper" onclick="openEnvelope()">
+    <div class="envelope-cover"></div>
+    
+    <div class="inner-card" id="inviteCard">
+      <img src="invite.jpg" alt="Wedding Invite"> 
+      
+      <div class="text-layer">
+        <div class="strike-line" id="strike-rev"></div>
+        <div class="strike-line" id="strike-mr"></div>
+        <div class="strike-line" id="strike-mrs"></div>
+        <div class="strike-line" id="strike-miss"></div>
+        <div id="guest-name"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-buttons">
+    <a href="YOUR_GOOGLE_MAPS_LINK_HERE" target="_blank" class="btn">
+      <span class="icon">📍</span> View Map
+    </a>
+    <a href="YOUR_CALENDAR_EVENT_LINK_HERE" target="_blank" class="btn">
+      <span class="icon">📅</span> Add to Calendar
+    </a>
+  </div>
+</div>
+
+<div class="watermark-footer">
+  System developed by <a href="https://avixtech.com" target="_blank">AviXtech</a>
+</div>
+
 <script>
-  // Browser URL එකෙන් නම ගන්නවා (උදා: ?name=Mr. Sandusha)
+  // URL එකෙන් නම ගන්නවා
   var urlParams = new URLSearchParams(window.location.search);
   var fullName = urlParams.get('name') || "Guest"; 
 
+  // ඔක්කොම පින්තූර ලෝඩ් වුණාට පස්සේ
   window.onload = function() {
+    
+    // 1. Loader එක අයින් කරනවා (smooth transition)
+    var loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    setTimeout(function() { loader.style.display = 'none'; }, 1500);
+
+    // 2. අකුරු කපන සහ නම ලියන Logic එක
     var title = "";
     var nameOnly = fullName;
     var match = fullName.match(/^(Mr|Mrs|Miss|Rev)\.?\s*(.*)/i); 
@@ -102,8 +228,25 @@
     }
   };
 
+  // --- Click කරාම වෙන දේවල් ---
   function openEnvelope() {
-    document.body.classList.add('open-state');
+    // 1. Animation එක පටන් ගන්නවා
+    document.getElementById('body').classList.add('open-state');
+
+    // 2. Background Music එක play කරනවා
+    var music = document.getElementById('bgMusic');
+    music.play().catch(function(error) {
+      console.log("Music autoplay blocked. User interaction required.");
+    });
+
+    // 3. ✨ Confetti Effect (ලස්සනට වැටෙන්න)
+    // පළවෙනි පාර
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#d4af37', '#ffffff', '#a67c00'] });
+    // දෙවෙනි පාර (පොඩ්ඩක් වෙලා ගිහින්)
+    setTimeout(function() {
+      confetti({ particleCount: 50, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#d4af37', '#fff'] });
+      confetti({ particleCount: 50, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#d4af37', '#fff'] });
+    }, 1500);
   }
 </script>
 </body>
