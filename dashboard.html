@@ -8,22 +8,24 @@
   <!-- Professional Icons (FontAwesome) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Google Fonts for the Invitation -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  
+  <!-- html2canvas Library (To convert HTML to Image) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
   <style>
     :root { 
       --primary-color: #d4af37; 
-      --primary-hover: #b5952f;
-      --bg-color: #f0f2f5; 
+      --bg-color: #f8f9fa; 
       --card-bg: #ffffff; 
-      --text-main: #1a1a1a;
+      --text-main: #333333;
       --text-muted: #6c757d;
-      --success: #2e7d32;
-      --error: #d32f2f;
-      --warning: #ed6c02;
     }
     
     body { 
       font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-      background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+      background: var(--bg-color); 
       margin: 0; 
       display: flex; 
       justify-content: center; 
@@ -35,195 +37,183 @@
       background: var(--card-bg); 
       width: 100%; 
       max-width: 480px; 
-      border-radius: 16px;
-      padding: 40px 35px; 
-      box-shadow: 0 15px 35px rgba(0,0,0,0.08), 0 5px 15px rgba(0,0,0,0.03);
+      border-radius: 12px;
+      padding: 35px 30px; 
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
       box-sizing: border-box;
-      transform: translateY(20px);
-      opacity: 0;
-      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      z-index: 10;
     }
 
-    @keyframes slideUp {
-      to { transform: translateY(0); opacity: 1; }
-    }
+    .header-title { text-align: center; margin-bottom: 30px; }
+    .header-title h2 { margin: 0; color: var(--text-main); font-weight: 600; font-size: 22px; }
+    .header-title p { color: var(--text-muted); font-size: 13px; margin-top: 8px; }
 
-    .header-title { 
-      text-align: center; 
-      margin-bottom: 35px; 
-    }
-    .header-title h2 { 
-      margin: 0; 
-      color: var(--text-main); 
-      font-weight: 700; 
-      font-size: 24px; 
-      letter-spacing: -0.5px;
-    }
-    .header-title p { 
-      color: var(--text-muted); 
-      font-size: 14px; 
-      margin-top: 8px; 
-    }
-
-    .input-wrapper { margin-bottom: 25px; position: relative; }
-    .input-wrapper i {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #adb5bd;
-      transition: color 0.3s;
-    }
+    .input-wrapper { margin-bottom: 20px; position: relative; }
     .input-wrapper input {
-      width: 100%; 
-      padding: 16px 16px 16px 45px; 
-      border: 2px solid #e9ecef; 
-      border-radius: 10px;
-      font-size: 15px; 
-      outline: none; 
-      transition: all 0.3s; 
-      box-sizing: border-box;
-      background: #f8f9fa;
+      width: 100%; padding: 14px 16px; border: 1px solid #dee2e6; border-radius: 8px;
+      font-size: 15px; outline: none; transition: border-color 0.3s; box-sizing: border-box;
     }
-    .input-wrapper input:focus { 
-      border-color: var(--primary-color); 
-      background: #ffffff;
-      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1); 
-    }
-    .input-wrapper input:focus + i, .input-wrapper input:valid + i {
-      color: var(--primary-color);
-    }
+    .input-wrapper input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); }
 
     .btn {
-      width: 100%; 
-      padding: 16px; 
-      border: none; 
-      border-radius: 10px; 
-      font-size: 15px;
-      font-weight: 600; 
-      cursor: pointer; 
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      gap: 10px;
-      box-sizing: border-box;
-      margin-bottom: 15px;
-      position: relative;
-      overflow: hidden;
+      width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 15px;
+      font-weight: 600; cursor: pointer; transition: all 0.2s;
+      display: flex; justify-content: center; align-items: center; gap: 10px; box-sizing: border-box; margin-bottom: 12px;
     }
-    
-    .btn-main { 
-      background: var(--text-main); 
-      color: white; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .btn-main:hover { background: #000000; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
-    .btn-main:active { transform: translateY(0); }
-    
-    .btn-preview { 
-      background: #ffffff; 
-      color: var(--text-main); 
-      border: 2px solid #e9ecef; 
-    }
-    .btn-preview:hover { background: #f8f9fa; border-color: #dee2e6; }
-    
-    .btn-whatsapp {
-      background: linear-gradient(135deg, #25D366, #128C7E); 
-      color: white; 
-      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-    }
-    .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4); }
+    .btn-main { background: var(--text-main); color: white; }
+    .btn-main:hover { background: #1a1a1a; }
+    .btn-preview { background: #f8f9fa; color: var(--text-main); border: 1px solid #dee2e6; }
+    .btn-preview:hover { background: #e9ecef; }
+    .btn-whatsapp { background: #25D366; color: white; }
+    .btn-whatsapp:hover { background: #20bd5a; }
 
-    /* Custom Toast Notifications (Replaces alert) */
-    .toast-container {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .toast {
-      background: #ffffff;
-      color: #333;
-      padding: 16px 24px;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 500;
-      font-size: 14px;
-      transform: translateX(120%);
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      border-left: 4px solid transparent;
-    }
-    .toast.show { transform: translateX(0); }
-    .toast.success { border-left-color: var(--success); }
-    .toast.success i { color: var(--success); }
-    .toast.error { border-left-color: var(--error); }
-    .toast.error i { color: var(--error); }
-    .toast.warning { border-left-color: var(--warning); }
-    .toast.warning i { color: var(--warning); }
-
-    /* Hidden elements and Fade animations */
     .hidden { display: none !important; }
+    .fade-in { animation: fadeInEffect 0.6s forwards; }
+    @keyframes fadeInEffect { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+
+    .preview-section { margin-top: 20px; text-align: center; padding-top: 20px; border-top: 1px solid #eee; }
     
-    .fade-in {
-      animation: fadeInEffect 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    /* Result image displayed in dashboard */
+    #resultImage { max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid #eee; }
+    .status-text { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 15px; height: 15px; }
+
+    /* ========================================================
+       HIDDEN HTML INVITATION TEMPLATE (For Image Capture)
+       ======================================================== */
+    #captureArea {
+      position: absolute;
+      top: -9999px; /* Hide from screen */
+      left: -9999px;
+      width: 700px; /* High resolution width */
+      height: 990px; /* High resolution height */
+      background-image: url('invite.jpg'); /* The blank border image */
+      background-size: cover;
+      background-position: center;
+      background-color: white;
+      font-family: 'Times New Roman', Times, serif;
+      color: #222;
+      text-align: center;
+      padding: 110px 80px 80px 80px;
+      box-sizing: border-box;
     }
     
-    @keyframes fadeInEffect { 
-      0% { opacity: 0; transform: translateY(10px); } 
-      100% { opacity: 1; transform: translateY(0); } 
+    .t-heading { font-size: 16px; letter-spacing: 2px; margin-bottom: 15px; font-weight: bold; }
+    .t-name { font-family: 'Great Vibes', cursive; font-size: 65px; margin: 0; font-weight: normal; color: #111; line-height: 1; }
+    .t-parents { font-size: 14px; margin: 5px 0 25px 0; line-height: 1.4; color: #333; }
+    .t-text { font-size: 15px; line-height: 1.5; margin: 20px 0; color: #333; }
+    
+    .t-dynamic-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 5px;
+      font-size: 16px;
+      margin: 30px 0;
+    }
+    
+    .t-titles { display: flex; gap: 2px; letter-spacing: 1px; }
+    
+    /* The Dotted line and Guest Name */
+    .t-guest-name {
+      flex-grow: 1;
+      border-bottom: 2px dotted #222;
+      text-align: center;
+      padding-bottom: 2px;
+      font-weight: bold;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .preview-section {
-      margin-top: 25px; 
-      text-align: center;
+    .t-date-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      font-size: 16px;
+      margin: 10px 0;
+      font-weight: bold;
     }
-    canvas {
-      max-width: 100%; 
-      height: auto; 
-      border-radius: 10px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.12); 
-      border: 1px solid #f1f3f5;
-    }
+    .t-date-num { font-size: 45px; border-left: 2px solid #222; border-right: 2px solid #222; padding: 0 20px; line-height: 1; }
+    .t-venue { font-size: 14px; line-height: 1.5; margin-top: 15px; }
+    .t-footer { font-size: 12px; font-weight: bold; margin-top: 25px; letter-spacing: 1px; }
+    
+    /* CSS Utility for perfectly striking through words */
+    .strike { text-decoration: line-through; color: #555; }
   </style>
 </head>
 <body>
 
-<!-- Toast Notification Container -->
-<div class="toast-container" id="toastContainer"></div>
-
 <div class="dashboard-wrapper">
   <div class="header-title">
-    <h2><i class="fa-solid fa-gem" style="color: var(--primary-color); margin-right: 8px;"></i> Invitation Studio</h2>
-    <p>Generate digital invitations securely</p>
+    <h2><i class="fa-solid fa-envelope-open-text" style="color: #d4af37; margin-right: 8px;"></i> Invitation System</h2>
+    <p>Enter guest details to generate digital invite</p>
   </div>
 
   <div class="input-wrapper">
-    <input type="text" id="guestName" placeholder="e.g. Mr. John Doe" autocomplete="off" required>
-    <i class="fa-solid fa-user"></i>
+    <input type="text" id="guestName" placeholder="e.g. Mr. John Doe" autocomplete="off">
   </div>
 
   <button class="btn btn-main" id="btnGenerate" onclick="processGeneration()">
-    <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Generate Link</span>
+    <i class="fa-solid fa-gear"></i> Generate Link & Image
   </button>
 
   <div id="actionButtons" class="hidden">
+    <button class="btn btn-preview" onclick="togglePreview()">
+      <i class="fa-solid fa-eye"></i> View Preview
+    </button>
     <button class="btn btn-whatsapp" onclick="sendWhatsApp()">
       <i class="fa-brands fa-whatsapp"></i> Send via WhatsApp
-    </button>
-    <button class="btn btn-preview" onclick="togglePreview()">
-      <i class="fa-solid fa-image"></i> View Preview
     </button>
   </div>
 
   <div class="preview-section hidden" id="previewArea">
-    <canvas id="inviteCanvas"></canvas>
+    <img id="resultImage" alt="Generated Invite">
+  </div>
+  
+  <div class="status-text" id="statusMessage"></div>
+</div>
+
+<!-- ========================================================
+     THE ACTUAL INVITATION TEMPLATE (Hidden from view)
+     ======================================================== -->
+<div id="captureArea">
+  <div class="t-heading">WEDDING INVITATION</div>
+  
+  <div class="t-name">Hiruni</div>
+  <div class="t-parents">DAUGHTER OF MR. SURAJ MUHANDIRAMGE<br>& MRS. CHAMARIE HETTIARACHCHI</div>
+  
+  <div class="t-name">Udayanga</div>
+  <div class="t-parents">SON OF MR. J.P. MAITHREEPALA<br>& MRS. W.I.M. AMARATHUNGA</div>
+  
+  <div class="t-text">TOGETHER WITH OUR PARENTS<br>REQUEST THE PLEASURE THE PRESENCE OF</div>
+  
+  <div class="t-dynamic-row">
+    <div class="t-titles">
+      <span id="lbl-rev">REV</span>/
+      <span id="lbl-mr">MR</span>/
+      <span id="lbl-mrs">MRS</span>/
+      <span id="lbl-miss">MISS</span>
+    </div>
+    <div class="t-guest-name" id="lbl-guest-name"></div>
+  </div>
+  
+  <div class="t-text">TO GRACE THIS OCCASION WHEN THEY<br>PLEDGE THEIR LOVE TO EACH OTHER</div>
+  
+  <div style="margin-top: 25px;">
+    <div style="font-size: 15px; letter-spacing: 1px;">THURSDAY</div>
+    <div class="t-date-row">
+      <span>APRIL</span>
+      <span class="t-date-num">23</span>
+      <span>2026</span>
+    </div>
+    <div class="t-venue">
+      FROM 8.30 TO 4.00 P.M.<br>
+      (PORUWA CEREMONY AT 10.21 A.M.)<br>
+      AT <strong>DHANAMUTHU ROYAL BANQUET HALL</strong><br>
+      DAGONNA, NEGOMBO
+    </div>
+    <div class="t-footer">HIRUNI : 076-2567965 / UDAYANGA : 076-4816775</div>
   </div>
 </div>
 
@@ -231,142 +221,95 @@
   // =========================================================================
   // 🔴 🔴 🔴 PASTE YOUR LINKS HERE 🔴 🔴 🔴
   // =========================================================================
-  var GITHUB_SITE_URL = "https://avishkhaacc.github.io/Hiru/index.html"; 
+  var GITHUB_SITE_URL = ": https://avishkhaacc.github.io/Hiru/index.html"; 
   var GAS_URL = "https://script.google.com/macros/s/AKfycbzC-Ghr2E1iSTy4VM22Ftiu-_Z_1NkFY6cOqnvBFfFTXF3vSUshCetwF83s0CU25DDOqQ/exec"; 
   // =========================================================================
 
-  var canvas = document.getElementById('inviteCanvas');
-  var ctx = canvas.getContext('2d');
   var finalLink = "";
   var generatedDataUrl = "";
-  var imageLoaded = false;
   var currentGuestName = "";
-  
-  // Custom Toast Notification Function (Replaces alert)
-  function showToast(message, type = 'success') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    
-    let icon = 'fa-check-circle';
-    if(type === 'error') icon = 'fa-circle-exclamation';
-    if(type === 'warning') icon = 'fa-triangle-exclamation';
 
-    toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
-    container.appendChild(toast);
-    
-    // Animate in
-    setTimeout(() => toast.classList.add('show'), 10);
-    
-    // Animate out and remove
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 400);
-    }, 3500);
-  }
-
-  // Pre-load the background image securely
-  var inviteImg = new Image();
-  inviteImg.crossOrigin = "Anonymous";
-  inviteImg.src = 'invite.jpg'; 
-  inviteImg.onload = function() { imageLoaded = true; };
-  inviteImg.onerror = function() { 
-    showToast("Template image failed to load. Check your files.", "error"); 
-  };
-
-  // Trigger generation on 'Enter' key press
   document.getElementById('guestName').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      processGeneration();
-    }
+    if (e.key === 'Enter') processGeneration();
   });
 
   function processGeneration() {
     var fullName = document.getElementById('guestName').value.trim();
-    if (!fullName) { 
-      showToast("Please enter a guest name.", "warning"); 
-      document.getElementById('guestName').focus();
-      return; 
-    }
-    if (!imageLoaded) { 
-      showToast("Template is still loading. Please wait a second.", "warning"); 
-      return; 
-    }
+    if (!fullName) { alert("Please enter a guest name."); return; }
 
-    // Advanced Loading State on Button
     var btn = document.getElementById('btnGenerate');
-    var originalContent = btn.innerHTML;
-    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Processing...</span>';
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
     btn.style.pointerEvents = 'none';
-    btn.style.opacity = '0.8';
 
+    document.getElementById('statusMessage').innerText = "Generating high-quality invitation...";
     currentGuestName = fullName;
 
-    // Simulate processing time for UX professional feel
-    setTimeout(() => {
-      try {
-        var title = "";
-        var nameOnly = fullName;
-        var match = fullName.match(/^(Mr|Mrs|Miss|Rev)\.?\s*(.*)/i); 
-        if(match) {
-          title = match[1].toUpperCase(); 
-          nameOnly = match[2]; 
-        }
+    // Parse title and name
+    var title = "";
+    var nameOnly = fullName;
+    var match = fullName.match(/^(Mr|Mrs|Miss|Rev)\.?\s*(.*)/i); 
+    if(match) {
+      title = match[1].toUpperCase(); 
+      nameOnly = match[2]; 
+    }
 
-        canvas.width = inviteImg.width;
-        canvas.height = inviteImg.height;
-        ctx.drawImage(inviteImg, 0, 0, canvas.width, canvas.height);
+    // 1. Reset all strikes
+    document.getElementById('lbl-rev').className = "";
+    document.getElementById('lbl-mr').className = "";
+    document.getElementById('lbl-mrs').className = "";
+    document.getElementById('lbl-miss').className = "";
 
-        var cw = canvas.width;
-        var ch = canvas.height;
-        var strikeY = ch * 0.515; 
+    // 2. Apply perfect CSS strike-through based on Title
+    if(title === "MR") { 
+      document.getElementById('lbl-rev').className = "strike";
+      document.getElementById('lbl-mrs').className = "strike";
+      document.getElementById('lbl-miss').className = "strike";
+    } else if (title === "MRS") { 
+      document.getElementById('lbl-rev').className = "strike";
+      document.getElementById('lbl-mr').className = "strike";
+      document.getElementById('lbl-miss').className = "strike";
+    } else if (title === "MISS") { 
+      document.getElementById('lbl-rev').className = "strike";
+      document.getElementById('lbl-mr').className = "strike";
+      document.getElementById('lbl-mrs').className = "strike";
+    } else if (title === "REV") { 
+      document.getElementById('lbl-mr').className = "strike";
+      document.getElementById('lbl-mrs').className = "strike";
+      document.getElementById('lbl-miss').className = "strike";
+    }
+
+    // 3. Set the name on the dotted line
+    document.getElementById('lbl-guest-name').innerText = nameOnly;
+
+    // 4. Capture the HTML template as an Image (Using html2canvas)
+    setTimeout(function() {
+      html2canvas(document.getElementById('captureArea'), { 
+        scale: 2, // High resolution capture
+        useCORS: true 
+      }).then(function(canvas) {
         
-        ctx.lineWidth = 2; 
-        ctx.strokeStyle = "rgba(30, 30, 30, 0.8)"; 
+        generatedDataUrl = canvas.toDataURL("image/jpeg", 0.95);
+        document.getElementById('resultImage').src = generatedDataUrl;
 
-        function drawStrike(leftPct, widthPct) {
-          ctx.beginPath();
-          ctx.moveTo(cw * (leftPct / 100), strikeY);
-          ctx.lineTo(cw * ((leftPct + widthPct) / 100), strikeY);
-          ctx.stroke();
-        }
-
-        if(title === "MR") { drawStrike(7.5, 6.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); } 
-        else if (title === "MRS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(24.5, 6.5); } 
-        else if (title === "MISS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(18.5, 6); } 
-        else if (title === "REV") { drawStrike(14, 4.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); }
-
-        var fontSize = Math.floor(cw * 0.025); 
-        ctx.font = fontSize + "px 'Times New Roman', serif";
-        ctx.fillStyle = "#222";
-        ctx.textBaseline = "middle";
-        ctx.fillText(nameOnly.toUpperCase(), cw * 0.45, ch * 0.508); 
-
-        generatedDataUrl = canvas.toDataURL("image/jpeg", 0.9);
-
+        // Generate Secret Link
         var encodedName = btoa(unescape(encodeURIComponent(fullName)));
         finalLink = GITHUB_SITE_URL + "?invite=" + encodedName;
 
-        // Background save
-        var fetchUrl = GAS_URL + "?name=" + encodeURIComponent(fullName) + "&phone=N/A";
-        fetch(fetchUrl).catch(e => console.log("Silent save"));
+        // Save to Google Sheets silently
+        fetch(GAS_URL + "?name=" + encodeURIComponent(fullName) + "&phone=N/A").catch(e => console.log("Silent save"));
 
         // UI Updates
         btn.classList.add('hidden');
-        var actionBtns = document.getElementById('actionButtons');
-        actionBtns.classList.remove('hidden');
-        actionBtns.classList.add('fade-in');
+        document.getElementById('actionButtons').classList.remove('hidden');
+        document.getElementById('actionButtons').classList.add('fade-in');
         
-        showToast("Invitation generated securely!", "success");
-
-      } catch (error) {
-        showToast("An error occurred during generation.", "error");
-        btn.innerHTML = originalContent;
+        document.getElementById('statusMessage').innerText = "Link generated successfully!";
+        
+        // Reset button
+        btn.innerHTML = '<i class="fa-solid fa-gear"></i> Generate Link & Image';
         btn.style.pointerEvents = 'auto';
-        btn.style.opacity = '1';
-      }
-    }, 600); // 600ms artificial delay for loading effect
+      });
+    }, 500); // Small delay to ensure Google Fonts (Great Vibes) are loaded before capture
   }
 
   function togglePreview() {
@@ -374,23 +317,15 @@
     if(previewArea.classList.contains('hidden')) {
       previewArea.classList.remove('hidden');
       previewArea.classList.add('fade-in');
-      document.querySelector('.btn-preview').innerHTML = '<i class="fa-solid fa-eye-slash"></i> Hide Preview';
     } else {
       previewArea.classList.add('hidden');
       previewArea.classList.remove('fade-in');
-      document.querySelector('.btn-preview').innerHTML = '<i class="fa-solid fa-eye"></i> View Preview';
     }
   }
 
   function sendWhatsApp() {
-    if(!generatedDataUrl) {
-      showToast("Please generate the link first.", "error");
-      return;
-    }
+    if(!generatedDataUrl) return;
 
-    showToast("Downloading image and opening WhatsApp...", "success");
-
-    // 1. Auto-Download the Image
     var safeName = currentGuestName.replace(/[^a-zA-Z0-9]/g, '_');
     var link = document.createElement('a');
     link.download = 'Invitation_' + safeName + '.jpg';
@@ -399,18 +334,17 @@
     link.click();
     document.body.removeChild(link);
 
-    // 2. Prepare WhatsApp Message
     var msg = "We joyfully invite you to share in our happiness as we celebrate our wedding day! \n\n" +
               "📍 Venue: Dhanamuthu Royal Banquet Hall, Negombo\n" +
               "⏱️ Poruwa Ceremony: 10:21 AM\n\n" +
               "Please click the link below to view your digital 3D invitation and location map:\n" + 
               finalLink;
 
-    // 3. Open WhatsApp
     var wpUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(msg);
     
     setTimeout(function() {
       window.open(wpUrl, '_blank');
+      document.getElementById('statusMessage').innerText = "Image downloaded. Please attach it in WhatsApp!";
     }, 800);
   }
 </script>
