@@ -1,74 +1,207 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Invite Dashboard</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #eef2f3; }
-    .box { background: white; padding: 25px; border-radius: 10px; max-width: 400px; margin: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-    input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px;}
-    button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px;}
-    button.wa-btn { background: #25d366; margin-top: 15px; display: none; }
-    #previewLink { margin-top: 20px; word-break: break-all; color: #0056b3; font-size: 14px; }
+    :root { --primary: #d4af37; --bg: #f4f7f6; --text: #333; --card-bg: #ffffff; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    
+    /* Advanced Card UI */
+    .dashboard-card {
+      background: var(--card-bg); width: 100%; max-width: 450px; border-radius: 20px;
+      padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      transform: translateY(20px); opacity: 0; animation: slideUp 0.8s ease forwards;
+    }
+    @keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
+
+    .header { text-align: center; margin-bottom: 25px; }
+    .header h2 { margin: 0; color: #111; font-weight: 600; font-size: 24px; }
+    .header p { color: #666; font-size: 14px; margin-top: 5px; }
+
+    /* Input Field */
+    .input-group { position: relative; margin-bottom: 20px; }
+    .input-group input {
+      width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px;
+      font-size: 16px; outline: none; transition: all 0.3s; box-sizing: border-box;
+    }
+    .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+
+    /* Buttons */
+    .btn {
+      width: 100%; padding: 15px; border: none; border-radius: 12px; font-size: 16px;
+      font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; justify-content: center; align-items: center; gap: 8px;
+    }
+    .btn-primary { background: linear-gradient(135deg, #d4af37, #b5952f); color: white; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); }
+    .btn-primary:active { transform: scale(0.98); }
+    
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #25D366, #128C7E); color: white; margin-top: 15px;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); display: none; /* මුලින් නොපෙනේ */
+    }
+    .btn-whatsapp:active { transform: scale(0.98); }
+
+    /* Canvas Preview Area */
+    .preview-container {
+      margin-top: 25px; text-align: center; display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .preview-container p { font-size: 14px; font-weight: bold; color: #555; margin-bottom: 10px; }
+    
+    canvas {
+      max-width: 100%; height: auto; border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15); border: 1px solid #ddd;
+    }
+
+    .status-msg { text-align: center; font-size: 13px; color: #888; margin-top: 15px; height: 15px; }
   </style>
 </head>
 <body>
 
-<div class="box">
-  <h2>Generate Invite</h2>
-  <label>අමුත්තාගේ නම (Title එකත් එක්ක ගහන්න):</label>
-  <input type="text" id="fullName" placeholder="උදා: Mr. Sandusha">
+<div class="dashboard-card">
+  <div class="header">
+    <h2>Invite Generator ✨</h2>
+    <p>අමුත්තාගේ නම ඇතුළත් කර Preview එක බලන්න</p>
+  </div>
+
+  <div class="input-group">
+    <input type="text" id="guestName" placeholder="උදා: Mr. Sandusha Avishkha" autocomplete="off">
+  </div>
+
+  <button class="btn btn-primary" onclick="generatePreview()">👁️ Generate Preview</button>
+
+  <div class="preview-container" id="previewArea">
+    <p>Card Preview:</p>
+    <canvas id="inviteCanvas"></canvas>
+    
+    <button class="btn btn-whatsapp" id="waBtn" onclick="downloadAndShare()">📲 Download & Send WhatsApp</button>
+  </div>
   
-  <label>WhatsApp අංකය:</label>
-  <input type="text" id="phone" placeholder="947...">
-  
-  <button onclick="generateLink()">Generate Link</button>
-  
-  <div id="previewLink"></div>
-  <button id="waBtn" class="wa-btn" onclick="sendWhatsApp()">Send WhatsApp</button>
+  <div class="status-msg" id="statusText"></div>
 </div>
 
 <script>
-  // වැදගත්: ඔයාගේ Google Apps Script Web App URL එක මෙතනට දාන්න
-  var GAS_URL = "https://script.google.com/macros/s/AKfycbzAG9KS6tuBhub0w4qzYBVZsL-hPNmrfDy8-ysqxst8GQvlw9AQpX6B7yn-7Sejf2KcPg/exec"; 
-  
-  // වැදගත්: ඔයාගේ GitHub Pages ලින්ක් එක මෙතනට දාන්න (Deploy කරාට පස්සේ)
-  var GITHUB_SITE_URL = "https://avishkhaacc.github.io/Hiru/"; 
+  // --- වැදගත්: ඔයාගේ ලින්ක් ටික මෙතන Update කරන්න ---
+  var GITHUB_SITE_URL = "https://avishkhaacc.github.io/YOUR_REPO_NAME/index.html"; 
+  var GAS_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"; 
 
+  var canvas = document.getElementById('inviteCanvas');
+  var ctx = canvas.getContext('2d');
   var finalLink = "";
-  var finalName = "";
-  var finalPhone = "";
+  var generatedDataUrl = "";
+  var imageLoaded = false;
+  
+  // පින්තූරය load කරගැනීම (CORS ප්‍රශ්න නොවෙන්න Anonymous දානවා)
+  var inviteImg = new Image();
+  inviteImg.crossOrigin = "Anonymous";
+  inviteImg.src = 'invite.jpg'; // GitHub එකේ තියෙන පින්තූරයම ගනී
+  
+  inviteImg.onload = function() { imageLoaded = true; };
 
-  function generateLink() {
-    var nameInput = document.getElementById('fullName').value.trim();
-    var phoneInput = document.getElementById('phone').value.trim();
-    
-    if(!nameInput) { alert("කරුණාකර නම ඇතුළත් කරන්න"); return; }
-    document.getElementById('previewLink').innerText = "Generating & Saving...";
-    
-    // 1. අමුත්තාට යවන ලින්ක් එක හදනවා (GitHub ලින්ක් එක + නම)
-    finalLink = GITHUB_SITE_URL + "?name=" + encodeURIComponent(nameInput);
-    finalName = nameInput;
-    finalPhone = phoneInput;
+  // --- 1. Preview එක Generate කිරීම ---
+  function generatePreview() {
+    var fullName = document.getElementById('guestName').value.trim();
+    if (!fullName) { alert("කරුණාකර නම ඇතුළත් කරන්න!"); return; }
+    if (!imageLoaded) { alert("පින්තූරය Load වෙමින් පවතී. සුළු මොහොතකින් නැවත උත්සාහ කරන්න."); return; }
 
-    // 2. Google Sheet එකට දත්ත යවනවා (Background එකෙන්)
-    var fetchUrl = GAS_URL + "?name=" + encodeURIComponent(nameInput) + "&phone=" + encodeURIComponent(phoneInput);
+    document.getElementById('statusText').innerText = "Generating Preview...";
+
+    // Title සහ Name වෙන් කිරීම
+    var title = "";
+    var nameOnly = fullName;
+    var match = fullName.match(/^(Mr|Mrs|Miss|Rev)\.?\s*(.*)/i); 
+    if(match) {
+      title = match[1].toUpperCase(); 
+      nameOnly = match[2]; 
+    }
+
+    // Canvas එකේ සයිස් එක ඔරිජිනල් පින්තූරයේ සයිස් එකට හදනවා
+    canvas.width = inviteImg.width;
+    canvas.height = inviteImg.height;
+
+    // 1. පින්තූරය අඳිනවා
+    ctx.drawImage(inviteImg, 0, 0, canvas.width, canvas.height);
+
+    // 2. අකුරු සහ ඉරි වල Styles (ඔරිජිනල් පින්තූරයේ pixels අනුව ගණනය කිරීම)
+    var cw = canvas.width;
+    var ch = canvas.height;
     
-    fetch(fetchUrl)
-      .then(response => {
-        // දත්ත සේව් වුණාට පස්සේ ලින්ක් එක පෙන්නනවා
-        document.getElementById('previewLink').innerHTML = "<b>සූදානම්:</b><br><a href='" + finalLink + "' target='_blank'>Preview Invitation</a>";
-        document.getElementById('waBtn').style.display = "block";
-      })
-      .catch(error => {
-        alert("Google Sheet එකට සේව් කිරීමේ දෝෂයක්. නමුත් ලින්ක් එක හැදුනා.");
-        document.getElementById('previewLink').innerHTML = "<a href='" + finalLink + "' target='_blank'>Preview Invitation</a>";
-      });
+    // Y අක්ෂයේ ඉරි වදින්න ඕනේ තැන (51.5%)
+    var strikeY = ch * 0.515; 
+    ctx.lineWidth = 2; // ඉරේ මහත
+    ctx.strokeStyle = "rgba(30, 30, 30, 0.8)"; // ඉරේ පාට
+
+    function drawStrike(leftPct, widthPct) {
+      ctx.beginPath();
+      ctx.moveTo(cw * (leftPct / 100), strikeY);
+      ctx.lineTo(cw * ((leftPct + widthPct) / 100), strikeY);
+      ctx.stroke();
+    }
+
+    // අදාළ නැති title කපනවා (CSS වල ප්‍රතිශතම පාවිච්චි කළා)
+    if(title === "MR") { drawStrike(7.5, 6.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); } 
+    else if (title === "MRS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(24.5, 6.5); } 
+    else if (title === "MISS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(18.5, 6); } 
+    else if (title === "REV") { drawStrike(14, 4.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); }
+
+    // 3. නම ලියනවා
+    // ෆොන්ට් සයිස් එක පින්තූරයේ පළලට සාපේක්ෂව හදලා තියෙන්නේ
+    var fontSize = Math.floor(cw * 0.025); 
+    ctx.font = fontSize + "px 'Times New Roman', serif";
+    ctx.fillStyle = "#222";
+    ctx.textBaseline = "middle";
+    // X=45%, Y=50.8%
+    ctx.fillText(nameOnly.toUpperCase(), cw * 0.45, ch * 0.508); 
+
+    // Canvas එකෙන් අලුත් පින්තූරය (Data URL) හදාගන්නවා
+    generatedDataUrl = canvas.toDataURL("image/jpeg", 0.9);
+
+    // 4. Base64 Link එක හදනවා (Secret Code)
+    var encodedName = btoa(unescape(encodeURIComponent(fullName)));
+    finalLink = GITHUB_SITE_URL + "?invite=" + encodedName;
+
+    // 5. Google Sheet එකට Background එකෙන් දත්ත යවනවා
+    var fetchUrl = GAS_URL + "?name=" + encodeURIComponent(fullName) + "&phone=N/A";
+    fetch(fetchUrl).catch(e => console.log("GAS Save Error"));
+
+    // Preview එක පෙන්නනවා
+    document.getElementById('previewArea').style.display = "block";
+    document.getElementById('waBtn').style.display = "flex";
+    document.getElementById('statusText').innerText = "Preview Ready! You can now send it.";
   }
 
-  function sendWhatsApp() {
-    var msg = "ආයුබෝවන් " + finalName + ",\n\nඅපේ විවාහ උත්සවයේ ආරාධනා පත්‍රය මෙතනින් බලන්න: " + finalLink;
-    window.open("https://wa.me/" + finalPhone + "?text=" + encodeURIComponent(msg), '_blank');
+  // --- 2. Download කරලා WhatsApp එක Open කිරීම ---
+  function downloadAndShare() {
+    if(!generatedDataUrl) return;
+
+    // 1. පින්තූරය ඩවුන්ලෝඩ් කරනවා
+    var link = document.createElement('a');
+    link.download = 'Invitation_' + document.getElementById('guestName').value.trim() + '.jpg';
+    link.href = generatedDataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // 2. WhatsApp එකට යවන මැසේජ් එක ලෑස්ති කරනවා
+    var msg = "We joyfully invite you to share in our happiness as we celebrate our wedding day! 💍✨\n\n" +
+              "📍 Venue: Dhanamuthu Royal Banquet Hall, Negombo\n" +
+              "⏱️ Poruwa Ceremony: 10:21 AM\n\n" +
+              "View your digital 3D invite and location map here: \n" + finalLink;
+
+    // 3. WhatsApp Contact Picker එක ඕපන් කරනවා (අංකයක් නැතුව)
+    // මේ ලින්ක් එකෙන් කෙලින්ම WhatsApp ඇප් එක ඕපන් වෙලා කාවද Select කරන්නේ අහනවා
+    var wpUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(msg);
+    
+    // පොඩි වෙලාවක් දීලා WhatsApp ඕපන් කරනවා (Download එක වෙන්න ඉඩ දීලා)
+    setTimeout(function() {
+      window.open(wpUrl, '_blank');
+      document.getElementById('statusText').innerText = "Image Downloaded & WhatsApp Opened! Please attach the image.";
+    }, 500);
   }
 </script>
+
 </body>
 </html>
