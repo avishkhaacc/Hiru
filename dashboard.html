@@ -11,15 +11,19 @@
   <style>
     :root { 
       --primary-color: #d4af37; 
-      --bg-color: #f8f9fa; 
+      --primary-hover: #b5952f;
+      --bg-color: #f0f2f5; 
       --card-bg: #ffffff; 
-      --text-main: #333333;
+      --text-main: #1a1a1a;
       --text-muted: #6c757d;
+      --success: #2e7d32;
+      --error: #d32f2f;
+      --warning: #ed6c02;
     }
     
     body { 
       font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-      background: var(--bg-color); 
+      background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
       margin: 0; 
       display: flex; 
       justify-content: center; 
@@ -31,80 +35,138 @@
       background: var(--card-bg); 
       width: 100%; 
       max-width: 480px; 
-      border-radius: 12px;
-      padding: 35px 30px; 
-      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+      border-radius: 16px;
+      padding: 40px 35px; 
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08), 0 5px 15px rgba(0,0,0,0.03);
       box-sizing: border-box;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideUp {
+      to { transform: translateY(0); opacity: 1; }
     }
 
     .header-title { 
       text-align: center; 
-      margin-bottom: 30px; 
+      margin-bottom: 35px; 
     }
     .header-title h2 { 
       margin: 0; 
       color: var(--text-main); 
-      font-weight: 600; 
-      font-size: 22px; 
-      letter-spacing: 0.5px;
+      font-weight: 700; 
+      font-size: 24px; 
+      letter-spacing: -0.5px;
     }
     .header-title p { 
       color: var(--text-muted); 
-      font-size: 13px; 
+      font-size: 14px; 
       margin-top: 8px; 
     }
 
-    .input-wrapper { margin-bottom: 20px; }
+    .input-wrapper { margin-bottom: 25px; position: relative; }
+    .input-wrapper i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #adb5bd;
+      transition: color 0.3s;
+    }
     .input-wrapper input {
       width: 100%; 
-      padding: 14px 16px; 
-      border: 1px solid #dee2e6; 
-      border-radius: 8px;
+      padding: 16px 16px 16px 45px; 
+      border: 2px solid #e9ecef; 
+      border-radius: 10px;
       font-size: 15px; 
       outline: none; 
-      transition: border-color 0.3s; 
+      transition: all 0.3s; 
       box-sizing: border-box;
+      background: #f8f9fa;
     }
     .input-wrapper input:focus { 
       border-color: var(--primary-color); 
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); 
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1); 
+    }
+    .input-wrapper input:focus + i, .input-wrapper input:valid + i {
+      color: var(--primary-color);
     }
 
     .btn {
       width: 100%; 
-      padding: 14px; 
+      padding: 16px; 
       border: none; 
-      border-radius: 8px; 
+      border-radius: 10px; 
       font-size: 15px;
       font-weight: 600; 
       cursor: pointer; 
-      transition: all 0.2s ease-in-out;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex; 
       justify-content: center; 
       align-items: center; 
       gap: 10px;
       box-sizing: border-box;
-      margin-bottom: 12px;
+      margin-bottom: 15px;
+      position: relative;
+      overflow: hidden;
     }
     
     .btn-main { 
       background: var(--text-main); 
       color: white; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    .btn-main:hover { background: #1a1a1a; }
+    .btn-main:hover { background: #000000; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+    .btn-main:active { transform: translateY(0); }
     
     .btn-preview { 
-      background: #f8f9fa; 
+      background: #ffffff; 
       color: var(--text-main); 
-      border: 1px solid #dee2e6; 
+      border: 2px solid #e9ecef; 
     }
-    .btn-preview:hover { background: #e9ecef; }
+    .btn-preview:hover { background: #f8f9fa; border-color: #dee2e6; }
     
     .btn-whatsapp {
-      background: #25D366; 
+      background: linear-gradient(135deg, #25D366, #128C7E); 
       color: white; 
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
     }
-    .btn-whatsapp:hover { background: #20bd5a; }
+    .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4); }
+
+    /* Custom Toast Notifications (Replaces alert) */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      background: #ffffff;
+      color: #333;
+      padding: 16px 24px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      font-size: 14px;
+      transform: translateX(120%);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-left: 4px solid transparent;
+    }
+    .toast.show { transform: translateX(0); }
+    .toast.success { border-left-color: var(--success); }
+    .toast.success i { color: var(--success); }
+    .toast.error { border-left-color: var(--error); }
+    .toast.error i { color: var(--error); }
+    .toast.warning { border-left-color: var(--warning); }
+    .toast.warning i { color: var(--warning); }
 
     /* Hidden elements and Fade animations */
     .hidden { display: none !important; }
@@ -114,77 +176,63 @@
     }
     
     @keyframes fadeInEffect { 
-      0% { opacity: 0; transform: translateY(15px); } 
+      0% { opacity: 0; transform: translateY(10px); } 
       100% { opacity: 1; transform: translateY(0); } 
     }
 
     .preview-section {
-      margin-top: 20px; 
+      margin-top: 25px; 
       text-align: center;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
     }
     canvas {
       max-width: 100%; 
       height: auto; 
-      border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
-      border: 1px solid #eee;
-    }
-
-    .status-text { 
-      text-align: center; 
-      font-size: 12px; 
-      color: var(--text-muted); 
-      margin-top: 15px; 
-      height: 15px; 
+      border-radius: 10px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12); 
+      border: 1px solid #f1f3f5;
     }
   </style>
 </head>
 <body>
 
+<!-- Toast Notification Container -->
+<div class="toast-container" id="toastContainer"></div>
+
 <div class="dashboard-wrapper">
   <div class="header-title">
-    <h2><i class="fa-solid fa-envelope-open-text" style="color: #d4af37; margin-right: 8px;"></i> Invitation System</h2>
-    <p>Enter guest details to generate digital invite</p>
+    <h2><i class="fa-solid fa-gem" style="color: var(--primary-color); margin-right: 8px;"></i> Invitation Studio</h2>
+    <p>Generate digital invitations securely</p>
   </div>
 
   <div class="input-wrapper">
-    <input type="text" id="guestName" placeholder="e.g. Mr. John Doe" autocomplete="off">
+    <input type="text" id="guestName" placeholder="e.g. Mr. John Doe" autocomplete="off" required>
+    <i class="fa-solid fa-user"></i>
   </div>
 
   <button class="btn btn-main" id="btnGenerate" onclick="processGeneration()">
-    <i class="fa-solid fa-gear"></i> Generate Link
+    <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Generate Link</span>
   </button>
 
-  <!-- These buttons will fade in after generation -->
   <div id="actionButtons" class="hidden">
-    <button class="btn btn-preview" onclick="togglePreview()">
-      <i class="fa-solid fa-eye"></i> View Preview
-    </button>
     <button class="btn btn-whatsapp" onclick="sendWhatsApp()">
       <i class="fa-brands fa-whatsapp"></i> Send via WhatsApp
+    </button>
+    <button class="btn btn-preview" onclick="togglePreview()">
+      <i class="fa-solid fa-image"></i> View Preview
     </button>
   </div>
 
   <div class="preview-section hidden" id="previewArea">
     <canvas id="inviteCanvas"></canvas>
   </div>
-  
-  <div class="status-text" id="statusMessage"></div>
 </div>
 
 <script>
   // =========================================================================
   // 🔴 🔴 🔴 PASTE YOUR LINKS HERE 🔴 🔴 🔴
   // =========================================================================
-  
-  // 1. Paste your GitHub Pages Link here:
   var GITHUB_SITE_URL = "https://avishkhaacc.github.io/Hiru/index.html"; 
-  
-  // 2. Paste your Google Apps Script Web App URL here:
   var GAS_URL = "https://script.google.com/macros/s/AKfycbzC-Ghr2E1iSTy4VM22Ftiu-_Z_1NkFY6cOqnvBFfFTXF3vSUshCetwF83s0CU25DDOqQ/exec"; 
-  
   // =========================================================================
 
   var canvas = document.getElementById('inviteCanvas');
@@ -194,15 +242,42 @@
   var imageLoaded = false;
   var currentGuestName = "";
   
-  // Load the background image
+  // Custom Toast Notification Function (Replaces alert)
+  function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    let icon = 'fa-check-circle';
+    if(type === 'error') icon = 'fa-circle-exclamation';
+    if(type === 'warning') icon = 'fa-triangle-exclamation';
+
+    toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+    container.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    // Animate out and remove
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 400);
+    }, 3500);
+  }
+
+  // Pre-load the background image securely
   var inviteImg = new Image();
   inviteImg.crossOrigin = "Anonymous";
   inviteImg.src = 'invite.jpg'; 
   inviteImg.onload = function() { imageLoaded = true; };
+  inviteImg.onerror = function() { 
+    showToast("Template image failed to load. Check your files.", "error"); 
+  };
 
   // Trigger generation on 'Enter' key press
   document.getElementById('guestName').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
+      e.preventDefault();
       processGeneration();
     }
   });
@@ -210,77 +285,88 @@
   function processGeneration() {
     var fullName = document.getElementById('guestName').value.trim();
     if (!fullName) { 
-      alert("Please enter a guest name."); 
+      showToast("Please enter a guest name.", "warning"); 
+      document.getElementById('guestName').focus();
       return; 
     }
     if (!imageLoaded) { 
-      alert("Background image is still loading. Please try again in a moment."); 
+      showToast("Template is still loading. Please wait a second.", "warning"); 
       return; 
     }
 
-    document.getElementById('statusMessage').innerText = "Processing details...";
+    // Advanced Loading State on Button
+    var btn = document.getElementById('btnGenerate');
+    var originalContent = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Processing...</span>';
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '0.8';
+
     currentGuestName = fullName;
 
-    // Parse title and name
-    var title = "";
-    var nameOnly = fullName;
-    var match = fullName.match(/^(Mr|Mrs|Miss|Rev)\.?\s*(.*)/i); 
-    if(match) {
-      title = match[1].toUpperCase(); 
-      nameOnly = match[2]; 
-    }
+    // Simulate processing time for UX professional feel
+    setTimeout(() => {
+      try {
+        var title = "";
+        var nameOnly = fullName;
+        var match = fullName.match(/^(Mr|Mrs|Miss|Rev)\.?\s*(.*)/i); 
+        if(match) {
+          title = match[1].toUpperCase(); 
+          nameOnly = match[2]; 
+        }
 
-    // Prepare Canvas
-    canvas.width = inviteImg.width;
-    canvas.height = inviteImg.height;
-    ctx.drawImage(inviteImg, 0, 0, canvas.width, canvas.height);
+        canvas.width = inviteImg.width;
+        canvas.height = inviteImg.height;
+        ctx.drawImage(inviteImg, 0, 0, canvas.width, canvas.height);
 
-    var cw = canvas.width;
-    var ch = canvas.height;
-    var strikeY = ch * 0.515; 
-    
-    ctx.lineWidth = 2; 
-    ctx.strokeStyle = "rgba(30, 30, 30, 0.8)"; 
+        var cw = canvas.width;
+        var ch = canvas.height;
+        var strikeY = ch * 0.515; 
+        
+        ctx.lineWidth = 2; 
+        ctx.strokeStyle = "rgba(30, 30, 30, 0.8)"; 
 
-    function drawStrike(leftPct, widthPct) {
-      ctx.beginPath();
-      ctx.moveTo(cw * (leftPct / 100), strikeY);
-      ctx.lineTo(cw * ((leftPct + widthPct) / 100), strikeY);
-      ctx.stroke();
-    }
+        function drawStrike(leftPct, widthPct) {
+          ctx.beginPath();
+          ctx.moveTo(cw * (leftPct / 100), strikeY);
+          ctx.lineTo(cw * ((leftPct + widthPct) / 100), strikeY);
+          ctx.stroke();
+        }
 
-    // Strike logic based on title
-    if(title === "MR") { drawStrike(7.5, 6.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); } 
-    else if (title === "MRS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(24.5, 6.5); } 
-    else if (title === "MISS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(18.5, 6); } 
-    else if (title === "REV") { drawStrike(14, 4.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); }
+        if(title === "MR") { drawStrike(7.5, 6.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); } 
+        else if (title === "MRS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(24.5, 6.5); } 
+        else if (title === "MISS") { drawStrike(7.5, 6.5); drawStrike(14, 4.5); drawStrike(18.5, 6); } 
+        else if (title === "REV") { drawStrike(14, 4.5); drawStrike(18.5, 6); drawStrike(24.5, 6.5); }
 
-    // Write Name
-    var fontSize = Math.floor(cw * 0.025); 
-    ctx.font = fontSize + "px 'Times New Roman', serif";
-    ctx.fillStyle = "#222";
-    ctx.textBaseline = "middle";
-    ctx.fillText(nameOnly.toUpperCase(), cw * 0.45, ch * 0.508); 
+        var fontSize = Math.floor(cw * 0.025); 
+        ctx.font = fontSize + "px 'Times New Roman', serif";
+        ctx.fillStyle = "#222";
+        ctx.textBaseline = "middle";
+        ctx.fillText(nameOnly.toUpperCase(), cw * 0.45, ch * 0.508); 
 
-    // Generate Base64 Image
-    generatedDataUrl = canvas.toDataURL("image/jpeg", 0.9);
+        generatedDataUrl = canvas.toDataURL("image/jpeg", 0.9);
 
-    // Generate Encoded Link (Secret Code)
-    var encodedName = btoa(unescape(encodeURIComponent(fullName)));
-    finalLink = GITHUB_SITE_URL + "?invite=" + encodedName;
+        var encodedName = btoa(unescape(encodeURIComponent(fullName)));
+        finalLink = GITHUB_SITE_URL + "?invite=" + encodedName;
 
-    // Save to Google Sheets silently
-    var fetchUrl = GAS_URL + "?name=" + encodeURIComponent(fullName) + "&phone=N/A";
-    fetch(fetchUrl).catch(e => console.log("Data save initiated."));
+        // Background save
+        var fetchUrl = GAS_URL + "?name=" + encodeURIComponent(fullName) + "&phone=N/A";
+        fetch(fetchUrl).catch(e => console.log("Silent save"));
 
-    // Hide Generate button, show action buttons with fade-in effect
-    document.getElementById('btnGenerate').classList.add('hidden');
-    
-    var actionBtns = document.getElementById('actionButtons');
-    actionBtns.classList.remove('hidden');
-    actionBtns.classList.add('fade-in');
-    
-    document.getElementById('statusMessage').innerText = "Link generated successfully!";
+        // UI Updates
+        btn.classList.add('hidden');
+        var actionBtns = document.getElementById('actionButtons');
+        actionBtns.classList.remove('hidden');
+        actionBtns.classList.add('fade-in');
+        
+        showToast("Invitation generated securely!", "success");
+
+      } catch (error) {
+        showToast("An error occurred during generation.", "error");
+        btn.innerHTML = originalContent;
+        btn.style.pointerEvents = 'auto';
+        btn.style.opacity = '1';
+      }
+    }, 600); // 600ms artificial delay for loading effect
   }
 
   function togglePreview() {
@@ -288,14 +374,21 @@
     if(previewArea.classList.contains('hidden')) {
       previewArea.classList.remove('hidden');
       previewArea.classList.add('fade-in');
+      document.querySelector('.btn-preview').innerHTML = '<i class="fa-solid fa-eye-slash"></i> Hide Preview';
     } else {
       previewArea.classList.add('hidden');
       previewArea.classList.remove('fade-in');
+      document.querySelector('.btn-preview').innerHTML = '<i class="fa-solid fa-eye"></i> View Preview';
     }
   }
 
   function sendWhatsApp() {
-    if(!generatedDataUrl) return;
+    if(!generatedDataUrl) {
+      showToast("Please generate the link first.", "error");
+      return;
+    }
+
+    showToast("Downloading image and opening WhatsApp...", "success");
 
     // 1. Auto-Download the Image
     var safeName = currentGuestName.replace(/[^a-zA-Z0-9]/g, '_');
@@ -306,20 +399,19 @@
     link.click();
     document.body.removeChild(link);
 
-    // 2. Prepare English WhatsApp Message
+    // 2. Prepare WhatsApp Message
     var msg = "We joyfully invite you to share in our happiness as we celebrate our wedding day! \n\n" +
               "📍 Venue: Dhanamuthu Royal Banquet Hall, Negombo\n" +
               "⏱️ Poruwa Ceremony: 10:21 AM\n\n" +
               "Please click the link below to view your digital 3D invitation and location map:\n" + 
               finalLink;
 
-    // 3. Open WhatsApp (Universal link for contact selection)
+    // 3. Open WhatsApp
     var wpUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(msg);
     
     setTimeout(function() {
       window.open(wpUrl, '_blank');
-      document.getElementById('statusMessage').innerText = "Image downloaded. Please attach it in WhatsApp!";
-    }, 600);
+    }, 800);
   }
 </script>
 
